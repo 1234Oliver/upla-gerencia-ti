@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unidad 01 — Sistemas de Información · Academia Digital</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep:#050a14;--bg-dark:#090f1e;--bg-card:#0d1629;--bg-card-hover:#111e38;
+      --accent:#3b82f6;--accent-glow:rgba(59,130,246,0.35);--accent2:#e879f9;--accent3:#10b981;--gold:#f59e0b;
+      --text-primary:#f0f6ff;--text-muted:#7a9abf;
+      --border:rgba(59,130,246,0.15);--border-hover:rgba(59,130,246,0.45);
+      --font-display:'Playfair Display',Georgia,serif;--font-body:'DM Sans',system-ui,sans-serif;
+      --radius:16px;--transition:cubic-bezier(0.4,0,0.2,1);
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;overflow-x:hidden;}
+    body{font-family:var(--font-body);background:var(--bg-deep);color:var(--text-primary);cursor:none;overflow-x:hidden;}
+
+    .cursor{position:fixed;width:8px;height:8px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s,background 0.2s;}
+    .cursor-follower{position:fixed;width:32px;height:32px;border:1.5px solid rgba(59,130,246,0.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left 0.12s,top 0.12s,width 0.3s,height 0.3s,border-color 0.3s;}
+
+    .cat-header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:rgba(5,10,20,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+    .back-btn{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:8px 20px;border-radius:100px;font-family:var(--font-body);font-size:0.85rem;cursor:none;transition:all 0.3s;text-decoration:none;display:inline-block;}
+    .back-btn:hover{border-color:var(--border-hover);color:var(--text-primary);background:rgba(59,130,246,0.08);}
+    .logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--text-primary);text-decoration:none;}
+    .logo-icon{font-size:1.5rem;color:var(--accent);animation:spin 12s linear infinite;display:inline-block;}
+    @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    .cat-progress{font-size:0.8rem;color:var(--text-muted);letter-spacing:0.06em;}
+
+    .cat-layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 65px);}
+
+    .sidebar{background:var(--bg-dark);border-right:1px solid var(--border);padding:40px 24px;position:sticky;top:65px;height:calc(100vh - 65px);overflow-y:auto;}
+    .sidebar-title{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px;padding-left:4px;}
+    .unit-nav{display:flex;flex-direction:column;gap:8px;}
+    .unit-btn{display:flex;align-items:center;gap:16px;padding:14px 16px;background:transparent;border:1px solid transparent;border-radius:12px;color:var(--text-muted);font-family:var(--font-body);cursor:none;transition:all 0.3s;text-align:left;width:100%;text-decoration:none;}
+    .unit-btn:hover{background:var(--bg-card);border-color:var(--border);color:var(--text-primary);}
+    .unit-btn.active{background:rgba(59,130,246,0.12);border-color:rgba(59,130,246,0.4);color:var(--accent);}
+    .unit-btn-num{font-family:var(--font-display);font-size:0.75rem;font-weight:700;min-width:28px;}
+    .unit-btn-label{font-size:0.9rem;font-weight:500;}
+
+    .sidebar-semanas{margin-top:32px;padding-top:24px;border-top:1px solid var(--border);}
+    .sidebar-semanas-title{font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;padding-left:4px;}
+    .semana-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--text-muted);font-size:0.82rem;text-decoration:none;transition:all 0.25s;border:1px solid transparent;}
+    .semana-link:hover{background:var(--bg-card);color:var(--text-primary);border-color:var(--border);}
+    .semana-link-num{font-family:var(--font-display);font-size:0.7rem;font-weight:700;color:var(--accent);min-width:22px;}
+
+    .cat-main{overflow-x:hidden;}
+
+    /* HERO */
+    .unidad-hero{padding:60px 60px 48px;background:linear-gradient(135deg,var(--bg-dark),var(--bg-deep));border-bottom:1px solid var(--border);position:relative;overflow:hidden;animation:fadeUp 0.6s both;}
+    .unidad-hero::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;background:radial-gradient(circle,rgba(59,130,246,0.07),transparent 70%);border-radius:50%;}
+    .unidad-tag{display:inline-block;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;font-weight:600;}
+    .unidad-titulo{font-family:var(--font-display);font-size:clamp(2rem,4vw,3.2rem);font-weight:800;line-height:1.15;margin-bottom:16px;}
+    .unidad-subtitulo{color:var(--text-muted);font-size:1.05rem;line-height:1.7;max-width:640px;margin-bottom:32px;}
+    .unidad-meta{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px;}
+    .unidad-meta span{font-size:0.82rem;color:var(--text-muted);background:rgba(255,255,255,0.04);padding:6px 16px;border-radius:100px;border:1px solid var(--border);}
+    .resumen-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;position:relative;z-index:1;}
+    .resumen-item{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+    .resumen-label{font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:6px;}
+    .resumen-label.obj{color:var(--accent);}
+    .resumen-label.val{color:var(--accent3);}
+    .resumen-label.ris{color:#f87171;}
+    .resumen-item p{font-size:0.82rem;color:var(--text-muted);line-height:1.5;}
+
+    /* SEMANA SECTION */
+    .semana-section{border-bottom:1px solid var(--border);}
+    .semana-header-main{display:flex;align-items:flex-start;gap:20px;padding:36px 60px 28px;}
+    .semana-num-big{font-family:var(--font-display);font-size:4rem;font-weight:900;color:rgba(59,130,246,0.1);line-height:1;flex-shrink:0;}
+    .semana-week-tag{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;}
+    .semana-titulo{font-family:var(--font-display);font-size:1.5rem;font-weight:700;margin-bottom:6px;}
+    .semana-intro{color:var(--text-muted);font-size:0.9rem;line-height:1.6;max-width:600px;}
+
+    /* TEMAS */
+    .temas-container{padding:0 60px 40px;}
+
+    .tema-acordeon{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px;transition:border-color 0.3s;}
+    .tema-acordeon:hover{border-color:var(--border-hover);}
+    .tema-acordeon.open{border-color:rgba(59,130,246,0.4);}
+
+    .tema-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px 22px;background:var(--bg-card);border:none;color:var(--text-primary);font-family:var(--font-body);font-size:0.95rem;font-weight:500;cursor:none;transition:background 0.25s;text-align:left;gap:12px;}
+    .tema-trigger:hover{background:var(--bg-card-hover);}
+    .tema-acordeon.open .tema-trigger{background:rgba(59,130,246,0.08);}
+    .tema-trigger-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0;}
+    .tema-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;border:1px solid var(--border);}
+    .tema-nombre{font-weight:600;font-size:0.93rem;}
+    .tema-desc-short{font-size:0.76rem;color:var(--text-muted);margin-top:1px;}
+    .tema-chevron{color:var(--text-muted);font-size:0.7rem;transition:transform 0.35s var(--transition);flex-shrink:0;}
+    .tema-acordeon.open .tema-chevron{transform:rotate(180deg);color:var(--accent);}
+
+    .tema-body{max-height:0;overflow:hidden;transition:max-height 0.55s var(--transition);}
+    .tema-acordeon.open .tema-body{max-height:3000px;}
+    .tema-content{padding:26px 22px 28px;background:rgba(9,15,30,0.7);border-top:1px solid var(--border);}
+
+    .content-section{margin-bottom:22px;}
+    .content-section:last-child{margin-bottom:0;}
+    .content-title{font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-primary);}
+    .content-text{color:var(--text-muted);font-size:0.87rem;line-height:1.75;}
+
+    .mini-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:12px;}
+    .mini-card{background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:14px 16px;transition:border-color 0.25s,transform 0.25s;}
+    .mini-card:hover{border-color:var(--border-hover);transform:translateY(-3px);}
+    .mini-card-label{font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:5px;}
+    .mini-card-title{font-size:0.86rem;font-weight:600;margin-bottom:4px;}
+    .mini-card-text{font-size:0.77rem;color:var(--text-muted);line-height:1.5;}
+
+    .niveles-stack{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+    .nivel-item{display:flex;align-items:flex-start;gap:14px;background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:14px 16px;border-left:3px solid;}
+    .nivel-sigla{font-family:var(--font-display);font-size:1.1rem;font-weight:900;min-width:52px;flex-shrink:0;}
+    .nivel-badge{font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;min-width:72px;padding-top:1px;flex-shrink:0;}
+    .nivel-info-title{font-size:0.87rem;font-weight:600;margin-bottom:2px;}
+    .nivel-info-text{font-size:0.77rem;color:var(--text-muted);line-height:1.5;}
+
+    .pilares-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:12px;}
+    .pilar-card{background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;transition:all 0.3s;}
+    .pilar-card:hover{border-color:var(--border-hover);background:var(--bg-card);}
+    .pilar-num{font-family:var(--font-display);font-size:1.6rem;font-weight:900;color:rgba(59,130,246,0.18);margin-bottom:6px;}
+    .pilar-title{font-size:0.84rem;font-weight:700;margin-bottom:4px;}
+    .pilar-text{font-size:0.75rem;color:var(--text-muted);line-height:1.5;}
+
+    .highlight-box{background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:16px 18px;margin-top:14px;}
+    .highlight-box.green{background:rgba(16,185,129,0.06);border-color:rgba(16,185,129,0.2);}
+    .highlight-box.gold{background:rgba(245,158,11,0.06);border-color:rgba(245,158,11,0.2);}
+    .highlight-box.red{background:rgba(248,113,113,0.06);border-color:rgba(248,113,113,0.2);}
+    .highlight-label{font-size:0.63rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:6px;}
+    .highlight-box p{font-size:0.83rem;color:var(--text-muted);line-height:1.6;}
+
+    .compare-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:0.81rem;}
+    .compare-table th{text-align:left;padding:10px 14px;background:rgba(59,130,246,0.08);color:var(--accent);font-weight:600;letter-spacing:0.04em;border-bottom:1px solid var(--border);}
+    .compare-table td{padding:10px 14px;border-bottom:1px solid rgba(59,130,246,0.07);color:var(--text-muted);vertical-align:top;line-height:1.5;}
+    .compare-table tr:last-child td{border-bottom:none;}
+    .compare-table tr:hover td{background:rgba(59,130,246,0.03);}
+    .compare-table td:first-child{color:var(--text-primary);font-weight:500;}
+
+    .video-section{margin-top:20px;}
+    .video-label-bar{font-size:0.72rem;color:var(--text-muted);padding:8px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px 10px 0 0;letter-spacing:0.04em;}
+    .video-frame{border-radius:0 0 10px 10px;overflow:hidden;background:#000;}
+    .video-frame iframe{width:100%;height:210px;border:none;display:block;}
+
+    .unit-nav-bottom{display:flex;justify-content:space-between;align-items:center;padding:28px 60px 60px;}
+    .nav-prev,.nav-next{padding:12px 28px;border-radius:100px;font-family:var(--font-body);font-size:0.9rem;font-weight:500;cursor:none;transition:all 0.3s;text-decoration:none;display:inline-block;}
+    .nav-prev{background:transparent;border:1px solid var(--border);color:var(--text-muted);}
+    .nav-prev:hover{border-color:var(--border-hover);color:var(--text-primary);}
+    .nav-next{background:var(--accent);border:1px solid var(--accent);color:#fff;}
+    .nav-next:hover{background:#2563eb;box-shadow:0 8px 24px var(--accent-glow);transform:translateY(-2px);}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+    ::-webkit-scrollbar{width:6px;}
+    ::-webkit-scrollbar-track{background:var(--bg-deep);}
+    ::-webkit-scrollbar-thumb{background:rgba(59,130,246,0.3);border-radius:100px;}
+    ::-webkit-scrollbar-thumb:hover{background:rgba(59,130,246,0.6);}
+
+    @media(max-width:900px){
+      .cat-layout{grid-template-columns:1fr;}
+      .sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border);padding:24px;}
+      .unit-nav{flex-direction:row;flex-wrap:wrap;}
+      .semana-header-main,.temas-container,.unit-nav-bottom{padding-left:24px;padding-right:24px;}
+      .unidad-hero{padding:40px 24px 36px;}
+      .resumen-grid{grid-template-columns:1fr;}
+    }
+    @media(max-width:680px){
+      .cat-header{padding:12px 20px;}
+      .cat-progress{display:none;}
+      .cursor,.cursor-follower{display:none;}
+      body{cursor:default;}
+      .mini-cards,.pilares-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor"></div>
+<div class="cursor-follower"></div>
+
+<header class="cat-header">
+  <a href="index.html" class="back-btn">← Inicio</a>
+  <a href="index.html" class="logo"><span class="logo-icon">⬡</span><span>UPLA Gerencia TI</span></a>
+  <div class="cat-progress">Unidad 1 de 4 — Sistemas de Información</div>
+</header>
+
+<div class="cat-layout">
+  <aside class="sidebar">
+    <p class="sidebar-title">Programa del curso</p>
+    <nav class="unit-nav">
+      <a class="unit-btn active" href="unidad1.html"><span class="unit-btn-num">01</span><span class="unit-btn-label">Administración en la Nube</span></a>
+      <a class="unit-btn" href="unidad2.html"><span class="unit-btn-num">02</span><span class="unit-btn-label">Aplicaciones Empresariales</span></a>
+      <a class="unit-btn" href="#"><span class="unit-btn-num">03</span><span class="unit-btn-label">Infraestructura de TI</span></a>
+      <a class="unit-btn" href="#"><span class="unit-btn-num">04</span><span class="unit-btn-label">Desarrollo de Sistemas</span></a>
+    </nav>
+    <div class="sidebar-semanas">
+      <p class="sidebar-semanas-title">Semanas</p>
+      <a href="#semana01" class="semana-link"><span class="semana-link-num">S01</span>Información en la empresa</a>
+      <a href="#semana02" class="semana-link"><span class="semana-link-num">S02</span>Computación en la nube</a>
+      <a href="#semana03" class="semana-link"><span class="semana-link-num">S03</span>Administración en la nube</a>
+      <a href="#semana04" class="semana-link"><span class="semana-link-num">S04</span>Infraestructura de TI</a>
+    </div>
+  </aside>
+
+  <main class="cat-main">
+
+    <!-- HERO UNIDAD -->
+    <div class="unidad-hero">
+      <div class="unidad-tag">Unidad 01</div>
+      <h1 class="unidad-titulo">ADMINISTRACION EN LA NUBE</h1>
+      <p class="unidad-subtitulo">La Administración en la Nube transforma la manera en que las empresas operan, permitiendo acceso remoto, escalabilidad inmediata y reducción de costos tecnológicos.</p>
+      <div class="unidad-meta">
+        <span>📅 4 semanas</span><span>🎯 Nivel introductorio</span><span>🎬 4 videos</span><span>📚 Sistemas de Información</span>
+      </div>
+      <div class="resumen-grid">
+        <div class="resumen-item"><div class="resumen-label obj">Objetivo</div><p>Comprender cómo la computación en la nube y los sistemas de información permiten optimizar procesos empresariales, mejorar la toma de decisiones y fortalecer la competitividad organizacional.</p></div>
+        <div class="resumen-item"><div class="resumen-label val">Valor</div><p>Mayor eficiencia operativa, acceso flexible a recursos tecnológicos, control de información, trazabilidad de procesos y capacidad de innovación empresarial.</p></div>
+        <div class="resumen-item"><div class="resumen-label ris">Riesgos</div><p>Dependencia del proveedor, vulnerabilidades de seguridad, pérdida de conectividad, mala gestión de datos y resistencia al cambio organizacional.</p></div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- SEMANA 01 -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="semana-section" id="semana01">
+      <div class="semana-header-main">
+        <div class="semana-num-big">01</div>
+        <div>
+          <div class="semana-week-tag">Semana 1 · Introducción</div>
+          <h2 class="semana-titulo">La Información en la Empresa</h2>
+          <p class="semana-intro">Fundamentos de los sistemas de información: qué son, cómo se clasifican y cuáles son sus componentes esenciales en el entorno corporativo moderno.</p>
+        </div>
+      </div>
+      <div class="temas-container">
+
+        <!-- 1.1 La información en la empresa -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3);">📊</div>
+              <div><div class="tema-nombre">La información en la empresa</div><div class="tema-desc-short">Datos → Información → Conocimiento → Decisión</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">La jerarquía del conocimiento</div>
+              <p class="content-text">En el entorno corporativo actual existe una jerarquía fundamental: <strong style="color:var(--text-primary)">Datos → Información → Conocimiento</strong>. Los datos son hechos crudos sin contexto (un número de venta). La información surge cuando esos datos se procesan y categorizan dándoles significado útil. Finalmente, el conocimiento es la aplicación práctica de esa información para tomar decisiones.</p>
+              <p class="content-text" style="margin-top:10px;">La información es el activo intangible más valioso de una empresa. Una correcta gestión permite anticipar tendencias, optimizar la cadena de suministro y lograr ventaja competitiva sostenible.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Características de la información de calidad</div>
+              <div class="mini-cards">
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent)">Exactitud</div><div class="mini-card-title">Sin errores</div><div class="mini-card-text">Los datos deben reflejar fielmente la realidad sin distorsiones ni omisiones.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent3)">Oportunidad</div><div class="mini-card-title">En tiempo real</div><div class="mini-card-text">La información entregada tarde pierde valor. Debe llegar cuando el decisor la necesita.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--gold)">Relevancia</div><div class="mini-card-title">Orientada al rol</div><div class="mini-card-text">Cada nivel jerárquico necesita información distinta: operativa, táctica o estratégica.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent2)">Completitud</div><div class="mini-card-title">Sin omisiones</div><div class="mini-card-text">Información incompleta puede llevar a decisiones peores que no tener información.</div></div>
+              </div>
+            </div>
+            <div class="highlight-box green"><div class="highlight-label" style="color:var(--accent3)">💡 Dato clave</div><p>Según McKinsey, empresas que usan efectivamente sus datos tienen 23× más probabilidades de adquirir clientes y 6× más de retenerlos.</p></div>
+          </div></div>
+        </div>
+
+        <!-- 1.2 Sistemas de Información -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);">🏗️</div>
+              <div><div class="tema-nombre">Sistemas de Información</div><div class="tema-desc-short">Definición, propósito y ciclo de vida de la información</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">¿Qué es un Sistema de Información?</div>
+              <p class="content-text">Un SI es un conjunto integrado de componentes diseñado para <strong style="color:var(--text-primary)">recopilar, procesar, almacenar y distribuir información</strong> que apoye la toma de decisiones, la coordinación y el control dentro de una organización.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Ciclo de vida de la información</div>
+              <div class="niveles-stack">
+                <div class="nivel-item" style="border-left-color:#3b82f6;"><div class="nivel-sigla" style="color:#3b82f6;">01</div><div><div class="nivel-info-title">Captura / Entrada</div><div class="nivel-info-text">Los datos ingresan desde transacciones, sensores, formularios o APIs externas.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#e879f9;"><div class="nivel-sigla" style="color:#e879f9;">02</div><div><div class="nivel-info-title">Procesamiento</div><div class="nivel-info-text">Los datos se clasifican, calculan y transforman según las reglas del negocio.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#10b981;"><div class="nivel-sigla" style="color:#10b981;">03</div><div><div class="nivel-info-title">Almacenamiento</div><div class="nivel-info-text">La información procesada se guarda en bases de datos para uso posterior.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#f59e0b;"><div class="nivel-sigla" style="color:#f59e0b;">04</div><div><div class="nivel-info-title">Salida / Distribución</div><div class="nivel-info-text">Reportes, dashboards y alertas entregan la información a los usuarios correctos.</div></div></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+        <!-- 1.3 Tipos de SI -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.3);">🏛️</div>
+              <div><div class="tema-nombre">Tipos de sistemas de información</div><div class="tema-desc-short">TPS, MIS, DSS, EIS — cada nivel jerárquico, su sistema</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">La pirámide de sistemas organizacionales</div>
+              <div class="niveles-stack">
+                <div class="nivel-item" style="border-left-color:#3b82f6;"><div><div class="nivel-badge" style="color:#3b82f6;">Operativo</div><div class="nivel-sigla" style="color:#3b82f6;font-size:1.3rem;">TPS</div></div><div><div class="nivel-info-title">Transaction Processing System</div><div class="nivel-info-text">Registran actividades diarias con alta confiabilidad: nómina, escaneo de productos, reservas. La base del edificio informacional.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#10b981;"><div><div class="nivel-badge" style="color:#10b981;">Gerencial</div><div class="nivel-sigla" style="color:#10b981;font-size:1.3rem;">MIS</div></div><div><div class="nivel-info-title">Management Information System</div><div class="nivel-info-text">Resumen datos de los TPS en reportes estandarizados para supervisar rendimiento actual y predecir el futuro a corto plazo.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#e879f9;"><div><div class="nivel-badge" style="color:#e879f9;">Análisis</div><div class="nivel-sigla" style="color:#e879f9;font-size:1.3rem;">DSS</div></div><div><div class="nivel-info-title">Decision Support System</div><div class="nivel-info-text">Ayudan en decisiones semiestructuradas usando modelos analíticos avanzados, escenarios hipotéticos y simulaciones.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#f59e0b;"><div><div class="nivel-badge" style="color:#f59e0b;">Ejecutivo</div><div class="nivel-sigla" style="color:#f59e0b;font-size:1.3rem;">EIS</div></div><div><div class="nivel-info-title">Executive Information System</div><div class="nivel-info-text">KPIs críticos en dashboards intuitivos para la planeación estratégica a largo plazo de la alta dirección.</div></div></div>
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Comparativa rápida</div>
+              <table class="compare-table">
+                <thead><tr><th>Sistema</th><th>Usuarios</th><th>Tipo de decisión</th><th>Horizonte</th></tr></thead>
+                <tbody>
+                  <tr><td>TPS</td><td>Personal operativo</td><td>Estructurada / rutinaria</td><td>Diario</td></tr>
+                  <tr><td>MIS</td><td>Mandos medios</td><td>Semiestructurada</td><td>Semanal / mensual</td></tr>
+                  <tr><td>DSS</td><td>Analistas / gerentes</td><td>No estructurada</td><td>Mensual / trimestral</td></tr>
+                  <tr><td>EIS</td><td>Alta dirección</td><td>Estratégica</td><td>Anual / 5 años</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="video-section">
+              <div class="video-label-bar">📹 Video de la semana — Tipos de Sistemas de Información</div>
+              <div class="video-frame"><iframe src="https://www.youtube.com/embed/CisTaEKxhHE" title="Sistemas de Información" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            </div>
+          </div></div>
+        </div>
+
+        <!-- 1.4 Componentes -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.3);">⚙️</div>
+              <div><div class="tema-nombre">Componentes de los sistemas de información</div><div class="tema-desc-short">Los 5 pilares: hardware, software, datos, redes y personas</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Los 5 pilares de todo sistema de información</div>
+              <div class="pilares-grid">
+                <div class="pilar-card"><div class="pilar-num">01</div><div class="pilar-title">Hardware</div><div class="pilar-text">Infraestructura física: servidores, computadoras, dispositivos móviles y periféricos de I/O.</div></div>
+                <div class="pilar-card"><div class="pilar-num">02</div><div class="pilar-title">Software</div><div class="pilar-text">De sistema (Linux, Windows Server) y de aplicación (ERP, CRM, facturación). Dictan instrucciones al hardware.</div></div>
+                <div class="pilar-card"><div class="pilar-num">03</div><div class="pilar-title">Datos</div><div class="pilar-text">Repositorio estructurado gestionado por SGBD como SQL Server, Oracle o MySQL.</div></div>
+                <div class="pilar-card"><div class="pilar-num">04</div><div class="pilar-title">Redes y Telecom</div><div class="pilar-text">Routers, switches, fibra óptica e Internet. Conecta desde Intranets locales hasta la nube global.</div></div>
+                <div class="pilar-card"><div class="pilar-num">05</div><div class="pilar-title">Personas y Procedimientos</div><div class="pilar-text">Usuarios, desarrolladores, analistas y las políticas que rigen cómo se procesa la información.</div></div>
+              </div>
+            </div>
+            <div class="highlight-box red"><div class="highlight-label" style="color:#f87171;">⚠️ Error frecuente</div><p>Muchas organizaciones invierten en hardware y software de vanguardia, pero descuidan las personas y los procedimientos — los componentes que realmente determinan el éxito o fracaso del sistema.</p></div>
+          </div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- SEMANA 02 -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="semana-section" id="semana02">
+      <div class="semana-header-main">
+        <div class="semana-num-big">02</div>
+        <div>
+          <div class="semana-week-tag">Semana 2 · Cloud Computing</div>
+          <h2 class="semana-titulo">Computación en la Nube</h2>
+          <p class="semana-intro">Modelos de servicio y despliegue en la nube: cómo las empresas modernas escalan su infraestructura tecnológica sin inversiones masivas de capital.</p>
+        </div>
+      </div>
+      <div class="temas-container">
+
+        <!-- 2.1 Computación en la nube -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(14,165,233,0.1);border-color:rgba(14,165,233,0.3);">☁️</div>
+              <div><div class="tema-nombre">Computación en la nube</div><div class="tema-desc-short">Definición, características esenciales y ventajas empresariales</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">¿Qué es la computación en la nube?</div>
+              <p class="content-text">La computación en la nube es la entrega de servicios informáticos —servidores, almacenamiento, bases de datos, redes, software, análisis— a través de <strong style="color:var(--text-primary)">Internet ("la nube")</strong> bajo demanda y con pago por uso. El NIST define 5 características esenciales: autoservicio bajo demanda, acceso amplio, agrupación de recursos, elasticidad rápida y servicio medido.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Ventajas clave para las empresas</div>
+              <div class="mini-cards">
+                <div class="mini-card"><div class="mini-card-label" style="color:#0ea5e9">Capex → Opex</div><div class="mini-card-title">Sin inversión inicial</div><div class="mini-card-text">Se paga solo por lo que se usa. Elimina la compra de servidores propios.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent3)">Escalabilidad</div><div class="mini-card-title">Crece con el negocio</div><div class="mini-card-text">Recursos aumentan o disminuyen en minutos según la demanda real.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent)">Disponibilidad</div><div class="mini-card-title">SLA de 99.9%+</div><div class="mini-card-text">Redundancia geográfica garantiza alta disponibilidad en los grandes proveedores.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--gold)">Velocidad</div><div class="mini-card-title">Time-to-market</div><div class="mini-card-text">Nuevos entornos en horas, no semanas como con hardware físico.</div></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+        <!-- 2.2 Modelos de Despliegue -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3);">📦</div>
+              <div><div class="tema-nombre">Modelos de Despliegue</div><div class="tema-desc-short">Pública, privada, híbrida y multi-nube — cuándo usar cada una</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Los 4 modelos de despliegue cloud</div>
+              <div class="niveles-stack">
+                <div class="nivel-item" style="border-left-color:#3b82f6;"><div class="nivel-sigla" style="color:#3b82f6;font-size:0.9rem;min-width:70px;">Pública</div><div><div class="nivel-info-title">Cloud Pública — AWS, Azure, GCP</div><div class="nivel-info-text">Infraestructura compartida entre múltiples clientes. Máxima elasticidad y mínimo costo inicial. Ideal para startups y cargas variables.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#10b981;"><div class="nivel-sigla" style="color:#10b981;font-size:0.9rem;min-width:70px;">Privada</div><div><div class="nivel-info-title">Cloud Privada — On-premise o dedicada</div><div class="nivel-info-text">Infraestructura exclusiva de una organización. Mayor control y cumplimiento regulatorio. Usada en banca, salud y gobierno.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#e879f9;"><div class="nivel-sigla" style="color:#e879f9;font-size:0.9rem;min-width:70px;">Híbrida</div><div><div class="nivel-info-title">Cloud Híbrida — Lo mejor de ambos mundos</div><div class="nivel-info-text">Combina nube privada y pública con orquestación inteligente. Máxima flexibilidad para empresas con datos sensibles y cargas variables.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#f59e0b;"><div class="nivel-sigla" style="color:#f59e0b;font-size:0.9rem;min-width:70px;">Multi</div><div><div class="nivel-info-title">Multi-Cloud — Varios proveedores</div><div class="nivel-info-text">Uso simultáneo de múltiples nubes. Evita el vendor lock-in y optimiza costos usando el mejor servicio de cada proveedor.</div></div></div>
+              </div>
+            </div>
+            <div class="video-section">
+              <div class="video-label-bar">📹 Video de la semana — Computación en la Nube</div>
+              <div class="video-frame"><iframe src="https://www.youtube.com/embed/9oAf3g5_138" title="Cloud Computing" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- SEMANA 03 -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="semana-section" id="semana03">
+      <div class="semana-header-main">
+        <div class="semana-num-big">03</div>
+        <div>
+          <div class="semana-week-tag">Semana 3 · Gestión Cloud</div>
+          <h2 class="semana-titulo">Administración en la Nube</h2>
+          <p class="semana-intro">Funciones administrativas, modelos de servicio IaaS/PaaS/SaaS y tecnologías que hacen posible la operación en entornos cloud modernos.</p>
+        </div>
+      </div>
+      <div class="temas-container">
+
+        <!-- 3.1 Administración -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);">🛠️</div>
+              <div><div class="tema-nombre">Administración en la nube</div><div class="tema-desc-short">Responsabilidades, herramientas de gestión y gobernanza cloud</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Responsabilidades del administrador cloud</div>
+              <p class="content-text">El administrador de nube gestiona el ciclo de vida completo de los recursos cloud: aprovisionamiento, monitoreo, seguridad, costos y cumplimiento. Es el puente entre las necesidades del negocio y las capacidades técnicas del proveedor.</p>
+              <div class="mini-cards">
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent3)">Aprovisionamiento</div><div class="mini-card-title">Gestión de recursos</div><div class="mini-card-text">Crear, configurar y gestionar VMs, contenedores, storage y networking según demanda.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent)">Monitoreo</div><div class="mini-card-title">Observabilidad</div><div class="mini-card-text">Usar CloudWatch, Azure Monitor o Grafana para detectar anomalías y alertar proactivamente.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:#f87171">Seguridad</div><div class="mini-card-title">IAM y cifrado</div><div class="mini-card-text">Gestión de identidades, acceso mínimo y cifrado de datos en reposo y en tránsito.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--gold)">FinOps</div><div class="mini-card-title">Control de costos</div><div class="mini-card-text">Optimización del gasto cloud eliminando recursos ociosos y eligiendo instancias correctas.</div></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+        <!-- 3.2 Funciones IaaS/PaaS/SaaS -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.3);">📐</div>
+              <div><div class="tema-nombre">Funciones — IaaS, PaaS, SaaS</div><div class="tema-desc-short">Modelos de servicio: quién gestiona qué en cada capa</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Los 3 modelos de servicio cloud</div>
+              <div class="niveles-stack">
+                <div class="nivel-item" style="border-left-color:#3b82f6;"><div class="nivel-sigla" style="color:#3b82f6;">IaaS</div><div><div class="nivel-info-title">Infrastructure as a Service</div><div class="nivel-info-text">El proveedor gestiona hardware, red y virtualización. El cliente gestiona OS, middleware y apps. Ej: EC2 (AWS), Azure VMs, Google Compute Engine.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#f59e0b;"><div class="nivel-sigla" style="color:#f59e0b;">PaaS</div><div><div class="nivel-info-title">Platform as a Service</div><div class="nivel-info-text">El proveedor gestiona hasta el runtime. El cliente solo gestiona sus aplicaciones y datos. Ej: Heroku, Azure App Service, Google App Engine.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#10b981;"><div class="nivel-sigla" style="color:#10b981;">SaaS</div><div><div class="nivel-info-title">Software as a Service</div><div class="nivel-info-text">El proveedor gestiona todo. El cliente solo usa la aplicación. Ej: Google Workspace, Salesforce, Microsoft 365.</div></div></div>
+              </div>
+            </div>
+            <div class="highlight-box gold"><div class="highlight-label" style="color:var(--gold)">🎯 Analogía útil</div><p>IaaS = alquilas el terreno y construyes tu casa. PaaS = alquilas la casa y la amueblas. SaaS = alquilas un hotel completamente equipado y solo traes tu maleta.</p></div>
+          </div></div>
+        </div>
+
+        <!-- 3.3 Tecnología -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.3);">⚡</div>
+              <div><div class="tema-nombre">Tecnología cloud</div><div class="tema-desc-short">Virtualización, contenedores, serverless y orquestación</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Tecnologías habilitadoras del cloud moderno</div>
+              <div class="mini-cards">
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent)">Virtualización</div><div class="mini-card-title">VMware, Hyper-V, KVM</div><div class="mini-card-text">Ejecuta múltiples SO en un solo servidor físico, maximizando el uso del hardware.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:#0ea5e9">Contenedores</div><div class="mini-card-title">Docker</div><div class="mini-card-text">Empaquetan la app con todas sus dependencias. Portables, ligeros y consistentes entre entornos.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent3)">Orquestación</div><div class="mini-card-title">Kubernetes</div><div class="mini-card-text">Gestiona, escala y despliega contenedores automáticamente. Estándar de facto en producción.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--gold)">Serverless</div><div class="mini-card-title">AWS Lambda, Azure Functions</div><div class="mini-card-text">Ejecutas código sin gestionar servidores. Pagas solo por milisegundos de ejecución.</div></div>
+              </div>
+            </div>
+            <div class="video-section">
+              <div class="video-label-bar">📹 Video de la semana — Administración en la Nube</div>
+              <div class="video-frame"><iframe src="https://www.youtube.com/embed/7GbPvhBHygY" title="Administración Cloud" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- SEMANA 04 -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="semana-section" id="semana04">
+      <div class="semana-header-main">
+        <div class="semana-num-big">04</div>
+        <div>
+          <div class="semana-week-tag">Semana 4 · Evaluación</div>
+          <h2 class="semana-titulo">Infraestructura de TI</h2>
+          <p class="semana-intro">Modelos de despliegue de infraestructura, sus componentes físicos y lógicos, y los tipos que sostienen los sistemas de información modernos.</p>
+        </div>
+      </div>
+      <div class="temas-container">
+
+        <!-- 4.1 Infraestructura TI Modelos -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3);">🖧</div>
+              <div><div class="tema-nombre">Infraestructura de TI — Modelos de despliegue</div><div class="tema-desc-short">On-premise, cloud, edge y arquitecturas híbridas</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">¿Qué es la infraestructura de TI?</div>
+              <p class="content-text">La infraestructura de TI es el conjunto de componentes —hardware, software, redes y centros de datos— que forman la base sobre la cual se construyen y operan todos los servicios de una organización.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Comparativa de modelos de despliegue</div>
+              <table class="compare-table">
+                <thead><tr><th>Modelo</th><th>Control</th><th>Costo</th><th>Mejor para</th></tr></thead>
+                <tbody>
+                  <tr><td>On-premise</td><td>Total</td><td>Alto CAPEX</td><td>Datos regulados, baja latencia</td></tr>
+                  <tr><td>Cloud pública</td><td>Limitado</td><td>Variable OPEX</td><td>Startups, escala rápida</td></tr>
+                  <tr><td>Cloud privada</td><td>Alto</td><td>Medio-alto</td><td>Banca, salud, gobierno</td></tr>
+                  <tr><td>Híbrida</td><td>Compartido</td><td>Optimizado</td><td>Empresas en transición digital</td></tr>
+                  <tr><td>Edge Computing</td><td>Distribuido</td><td>Variable</td><td>IoT, retail, manufactura</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div></div>
+        </div>
+
+        <!-- 4.2 Componentes -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);">🔩</div>
+              <div><div class="tema-nombre">Componentes de infraestructura</div><div class="tema-desc-short">Servidores, almacenamiento, redes y centros de datos</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Componentes físicos y lógicos</div>
+              <div class="pilares-grid">
+                <div class="pilar-card"><div class="pilar-num">01</div><div class="pilar-title">Servidores</div><div class="pilar-text">Blade, rack o tower. Gestionan el procesamiento centralizado de cargas empresariales.</div></div>
+                <div class="pilar-card"><div class="pilar-num">02</div><div class="pilar-title">Almacenamiento</div><div class="pilar-text">SAN, NAS, DAS y almacenamiento objeto. Cada tipo optimizado para distintos patrones de acceso.</div></div>
+                <div class="pilar-card"><div class="pilar-num">03</div><div class="pilar-title">Networking</div><div class="pilar-text">Switches, routers, firewalls, balanceadores y SDN (Software Defined Networking).</div></div>
+                <div class="pilar-card"><div class="pilar-num">04</div><div class="pilar-title">Centro de Datos</div><div class="pilar-text">Instalación con servidores, refrigeración, alimentación redundante y seguridad física.</div></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+        <!-- 4.3 Tipos de infraestructura -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.3);">🗂️</div>
+              <div><div class="tema-nombre">Tipos de infraestructura de TI</div><div class="tema-desc-short">Legacy, virtualizada, hiperconvergente y cloud-native</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Evolución de la infraestructura de TI</div>
+              <div class="niveles-stack">
+                <div class="nivel-item" style="border-left-color:#6b7280;"><div class="nivel-sigla" style="color:#6b7280;font-size:0.9rem;min-width:76px;">Legacy</div><div><div class="nivel-info-title">Infraestructura Tradicional (Mainframe / Silos)</div><div class="nivel-info-text">Sistemas aislados, difíciles de escalar. Alta confiabilidad pero total rigidez. Aún presente en banca y gobierno.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#3b82f6;"><div class="nivel-sigla" style="color:#3b82f6;font-size:0.9rem;min-width:76px;">Virtuali.</div><div><div class="nivel-info-title">Infraestructura Virtualizada</div><div class="nivel-info-text">Múltiples VMs en hardware compartido. Mejor utilización de recursos y mayor flexibilidad que el modelo legacy.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#10b981;"><div class="nivel-sigla" style="color:#10b981;font-size:0.9rem;min-width:76px;">HCI</div><div><div class="nivel-info-title">Infraestructura Hiperconvergente</div><div class="nivel-info-text">Integra cómputo, almacenamiento y red en un único sistema software-defined. Ej: Nutanix, VMware vSAN.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#e879f9;"><div class="nivel-sigla" style="color:#e879f9;font-size:0.9rem;min-width:76px;">Cloud</div><div><div class="nivel-info-title">Infraestructura Cloud-Native</div><div class="nivel-info-text">Diseñada para la nube desde cero: microservicios, contenedores, CI/CD y APIs. Máxima agilidad y escala.</div></div></div>
+              </div>
+            </div>
+            <div class="highlight-box" style="margin-top:16px;"><div class="highlight-label" style="color:var(--accent)">📝 Actividad de cierre — Semana 4</div><p>Identifica qué tipo de infraestructura utiliza una empresa real de tu entorno. Clasifícala según los modelos vistos y justifica tu elección con al menos 3 criterios técnicos.</p></div>
+            <div class="video-section">
+              <div class="video-label-bar">📹 Video de la semana — Infraestructura de TI</div>
+              <div class="video-frame"><iframe src="https://www.youtube.com/embed/t_kJg4QL4WA" title="Infraestructura de TI" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="unit-nav-bottom">
+      <a href="index.html" class="nav-prev">← Inicio</a>
+      <a href="unidad2.html" class="nav-next">Siguiente unidad →</a>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // CURSOR
+  const cursor=document.querySelector('.cursor'),follower=document.querySelector('.cursor-follower');
+  let mX=0,mY=0,fX=0,fY=0,rafId=null;
+  document.addEventListener('mousemove',e=>{
+    mX=e.clientX;mY=e.clientY;
+    cursor.style.left=mX+'px';cursor.style.top=mY+'px';
+    if(!rafId)animF();
+  });
+  function animF(){
+    fX+=(mX-fX)*0.12;fY+=(mY-fY)*0.12;
+    follower.style.left=fX+'px';follower.style.top=fY+'px';
+    if(Math.hypot(mX-fX,mY-fY)>0.5)rafId=requestAnimationFrame(animF);else rafId=null;
+  }
+  document.addEventListener('mouseover',e=>{if(e.target.matches('a,button')){cursor.style.transform='translate(-50%,-50%) scale(2)';cursor.style.background='#e879f9';}});
+  document.addEventListener('mouseout',e=>{if(e.target.matches('a,button')){cursor.style.transform='translate(-50%,-50%) scale(1)';cursor.style.background='#3b82f6';}});
+  document.addEventListener('mousedown',()=>cursor.style.transform='translate(-50%,-50%) scale(0.7)');
+  document.addEventListener('mouseup',()=>cursor.style.transform='translate(-50%,-50%) scale(1)');
+
+  // ACORDEÓN
+  document.querySelectorAll('.tema-trigger').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const ac=btn.closest('.tema-acordeon');
+      const wasOpen=ac.classList.contains('open');
+      document.querySelectorAll('.tema-acordeon.open').forEach(a=>a.classList.remove('open'));
+      if(!wasOpen)ac.classList.add('open');
+    });
+  });
+
+  // HIGHLIGHT semana activa en sidebar
+  const semanas=document.querySelectorAll('.semana-section');
+  const links=document.querySelectorAll('.semana-link');
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        links.forEach(l=>{l.style.color='';l.style.background='';l.style.borderColor='transparent';});
+        const a=document.querySelector(`.semana-link[href="#${e.target.id}"]`);
+        if(a){a.style.color='var(--accent)';a.style.background='rgba(59,130,246,0.07)';a.style.borderColor='rgba(59,130,246,0.2)';}
+      }
+    });
+  },{threshold:0.4});
+  semanas.forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unidad 02 — Desarrollo · Academia Digital</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep: #050a14;
+      --bg-dark: #090f1e;
+      --bg-card: #0d1629;
+      --bg-card-hover: #111e38;
+      --accent: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.35);
+      --accent2: #e879f9;
+      --accent3: #10b981;
+      --text-primary: #f0f6ff;
+      --text-muted: #7a9abf;
+      --border: rgba(59, 130, 246, 0.15);
+      --border-hover: rgba(59, 130, 246, 0.45);
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-body: 'DM Sans', system-ui, sans-serif;
+      --radius: 16px;
+      --transition: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; overflow-x: hidden; }
+    body { font-family: var(--font-body); background: var(--bg-deep); color: var(--text-primary); cursor: none; overflow-x: hidden; }
+
+    /* CURSOR */
+    .cursor { position: fixed; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: transform 0.1s, background 0.2s; }
+    .cursor-follower { position: fixed; width: 32px; height: 32px; border: 1.5px solid rgba(59,130,246,0.5); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: transform 0.15s var(--transition), width 0.3s, height 0.3s, border-color 0.3s; }
+
+    /* HEADER */
+    .cat-header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; background: rgba(5,10,20,0.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); animation: slideDown 0.5s var(--transition) both; }
+    @keyframes slideDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+    .back-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 20px; border-radius: 100px; font-family: var(--font-body); font-size: 0.85rem; cursor: none; transition: all 0.3s var(--transition); text-decoration: none; display: inline-block; }
+    .back-btn:hover { border-color: var(--border-hover); color: var(--text-primary); background: rgba(59,130,246,0.08); }
+    .logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--text-primary); text-decoration: none; }
+    .logo-icon { font-size: 1.5rem; color: var(--accent); animation: spin 12s linear infinite; display: inline-block; }
+    @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+    .cat-progress { font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.06em; }
+
+    /* LAYOUT */
+    .cat-layout { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 65px); }
+
+    /* SIDEBAR */
+    .sidebar { background: var(--bg-dark); border-right: 1px solid var(--border); padding: 40px 24px; position: sticky; top: 65px; height: calc(100vh - 65px); overflow-y: auto; }
+    .sidebar-title { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; padding-left: 4px; }
+    .unit-nav { display: flex; flex-direction: column; gap: 8px; }
+    .unit-btn { display: flex; align-items: center; gap: 16px; padding: 14px 16px; background: transparent; border: 1px solid transparent; border-radius: 12px; color: var(--text-muted); font-family: var(--font-body); cursor: none; transition: all 0.3s var(--transition); text-align: left; width: 100%; text-decoration: none; }
+    .unit-btn:hover { background: var(--bg-card); border-color: var(--border); color: var(--text-primary); }
+    .unit-btn.active { background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.4); color: var(--accent); }
+    .unit-btn-num { font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; min-width: 28px; }
+    .unit-btn-label { font-size: 0.9rem; font-weight: 500; }
+
+    /* MAIN */
+    .cat-main { overflow-x: hidden; }
+    .unidad-section { animation: sectionEnter 0.6s var(--transition) forwards; }
+    @keyframes sectionEnter { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
+
+    /* UNIDAD HERO */
+    .unidad-hero { padding: 60px 60px 40px; background: linear-gradient(135deg, var(--bg-dark), var(--bg-deep)); border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
+    .unidad-hero::before { content: ''; position: absolute; top: -80px; right: -80px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(232,121,249,0.06), transparent 70%); border-radius: 50%; }
+    .unidad-tag { display: inline-block; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent2); margin-bottom: 16px; font-weight: 600; }
+    .unidad-titulo { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800; line-height: 1.15; margin-bottom: 16px; animation: fadeUp 0.6s var(--transition) 0.1s both; }
+    .unidad-subtitulo { color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; max-width: 600px; margin-bottom: 28px; animation: fadeUp 0.6s var(--transition) 0.2s both; }
+    .unidad-meta { display: flex; gap: 24px; flex-wrap: wrap; animation: fadeUp 0.6s var(--transition) 0.3s both; }
+    .unidad-meta span { font-size: 0.85rem; color: var(--text-muted); background: rgba(255,255,255,0.04); padding: 6px 16px; border-radius: 100px; border: 1px solid var(--border); }
+
+    /* SEMANAS GRID */
+    .semanas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; padding: 48px 60px; }
+    .semana-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 28px; transition: all 0.4s var(--transition); position: relative; overflow: hidden; opacity: 0; transform: translateY(30px); animation: cardReveal 0.6s var(--transition) forwards; }
+    .semana-card:nth-child(1) { animation-delay: 0.1s; }
+    .semana-card:nth-child(2) { animation-delay: 0.2s; }
+    .semana-card:nth-child(3) { animation-delay: 0.3s; }
+    .semana-card:nth-child(4) { animation-delay: 0.4s; }
+    @keyframes cardReveal { to{opacity:1;transform:translateY(0)} }
+    .semana-card::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(232,121,249,0.06), transparent 60%); opacity: 0; transition: opacity 0.4s; pointer-events: none; }
+    .semana-card:hover::after { opacity: 1; }
+    .semana-card:hover { border-color: rgba(232,121,249,0.3); transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(232,121,249,0.08); }
+    .semana-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .semana-num { font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; color: var(--accent2); letter-spacing: 0.1em; }
+    .semana-badge { font-size: 0.7rem; color: var(--text-muted); background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 100px; padding: 3px 12px; letter-spacing: 0.05em; }
+    .semana-card h3 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
+    .semana-subtitulo { color: var(--accent2); font-size: 0.8rem; font-weight: 500; margin-bottom: 12px; letter-spacing: 0.02em; }
+    .semana-desc { color: var(--text-muted); font-size: 0.88rem; line-height: 1.7; margin-bottom: 20px; }
+    .video-wrapper { border-radius: 12px; overflow: hidden; background: #000; }
+    .video-label { font-size: 0.75rem; color: var(--text-muted); padding: 10px 14px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); letter-spacing: 0.04em; }
+    .video-wrapper iframe { width: 100%; height: 195px; border: none; display: block; transition: filter 0.3s; }
+    .semana-card:not(:hover) .video-wrapper iframe { filter: brightness(0.9); }
+
+    /* NAV BOTTOM */
+    .unit-nav-bottom { display: flex; justify-content: space-between; align-items: center; padding: 20px 60px 60px; }
+    .nav-prev, .nav-next { padding: 12px 28px; border-radius: 100px; font-family: var(--font-body); font-size: 0.9rem; font-weight: 500; cursor: none; transition: all 0.3s var(--transition); text-decoration: none; display: inline-block; }
+    .nav-prev { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+    .nav-prev:hover { border-color: var(--border-hover); color: var(--text-primary); }
+    .nav-next { background: var(--accent); border: 1px solid var(--accent); color: #fff; }
+    .nav-next:hover { background: #2563eb; box-shadow: 0 8px 24px var(--accent-glow); transform: translateY(-2px); }
+
+    /* UTILS */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.3); border-radius: 100px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(59,130,246,0.6); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .cat-layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); padding: 24px; }
+      .unit-nav { flex-direction: row; flex-wrap: wrap; }
+      .semanas-grid { grid-template-columns: 1fr; padding: 30px 24px; }
+      .unidad-hero { padding: 40px 24px 30px; }
+      .unit-nav-bottom { padding: 20px 24px 40px; }
+    }
+    @media (max-width: 680px) {
+      .cat-header { padding: 12px 20px; }
+      .cat-progress { display: none; }
+      .cursor, .cursor-follower { display: none; }
+      body { cursor: default; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor"></div>
+  <div class="cursor-follower"></div>
+
+  <header class="cat-header">
+    <a href="index.html" class="back-btn">← Inicio</a>
+    <a href="index.html" class="logo">
+      <span class="logo-icon">⬡</span>
+      <span>Academia Digital</span>
+    </a>
+    <div class="cat-progress">Unidad 2 de 4 — Desarrollo</div>
+  </header>
+
+  <div class="cat-layout">
+    <aside class="sidebar">
+      <p class="sidebar-title">Programa del curso</p>
+      <nav class="unit-nav">
+        <a class="unit-btn" href="unidad1.html">
+          <span class="unit-btn-num">01</span>
+          <span class="unit-btn-label">Fundamentos</span>
+        </a>
+        <a class="unit-btn active" href="unidad2.html">
+          <span class="unit-btn-num">02</span>
+          <span class="unit-btn-label">Desarrollo</span>
+        </a>
+        <a class="unit-btn" href="#">
+          <span class="unit-btn-num">03</span>
+          <span class="unit-btn-label">Aplicación</span>
+        </a>
+        <a class="unit-btn" href="#">
+          <span class="unit-btn-num">04</span>
+          <span class="unit-btn-label">Integración</span>
+        </a>
+      </nav>
+    </aside>
+
+    <main class="cat-main">
+      <div class="unidad-section">
+        <div class="unidad-hero">
+          <div class="unidad-tag">Unidad 02</div>
+          <h1 class="unidad-titulo">Metodologías de Desarrollo</h1>
+          <p class="unidad-subtitulo">Profundización en herramientas, marcos de trabajo y enfoques metodológicos aplicados al campo de estudio.</p>
+          <div class="unidad-meta">
+            <span>📅 4 semanas</span>
+            <span>🎯 Nivel intermedio</span>
+            <span>🎬 4 videos</span>
+          </div>
+        </div>
+
+        <div class="semanas-grid">
+          <!-- SEMANA 1 -->
+          <div class="semana-card">
+            <div class="semana-header">
+              <div class="semana-num">S01</div>
+              <div class="semana-badge">Semana 1</div>
+            </div>
+            <h3>Modelos y marcos de trabajo</h3>
+            <p class="semana-subtitulo">Estructuras metodológicas para el análisis</p>
+            <p class="semana-desc">Estudiaremos los principales marcos conceptuales que guían el trabajo académico y profesional, identificando sus características, ventajas y contextos de aplicación.</p>
+            <div class="video-wrapper">
+              <div class="video-label">📹 Video de la semana</div>
+              <iframe src="https://www.youtube.com/embed/mt1yqlMDRTQ" title="Metodologías de investigación" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+
+          <!-- SEMANA 2 -->
+          <div class="semana-card">
+            <div class="semana-header">
+              <div class="semana-num">S02</div>
+              <div class="semana-badge">Semana 2</div>
+            </div>
+            <h3>Investigación y fuentes</h3>
+            <p class="semana-subtitulo">Búsqueda, evaluación y uso de información</p>
+            <p class="semana-desc">Aprenderemos a identificar fuentes confiables, utilizar bases de datos académicas y aplicar criterios de evaluación de la calidad de la información.</p>
+            <div class="video-wrapper">
+              <div class="video-label">📹 Video de la semana</div>
+              <iframe src="https://www.youtube.com/embed/B-8gqC1GYPE" title="Cómo investigar correctamente" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+
+          <!-- SEMANA 3 -->
+          <div class="semana-card">
+            <div class="semana-header">
+              <div class="semana-num">S03</div>
+              <div class="semana-badge">Semana 3</div>
+            </div>
+            <h3>Diseño y planificación</h3>
+            <p class="semana-subtitulo">De la idea al proyecto estructurado</p>
+            <p class="semana-desc">Convertiremos ideas en proyectos académicos sólidos mediante técnicas de planificación, gestión del tiempo y definición de objetivos SMART.</p>
+            <div class="video-wrapper">
+              <div class="video-label">📹 Video de la semana</div>
+              <iframe src="https://www.youtube.com/embed/H5HdxcA6ZuI" title="Planificación de proyectos" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+
+          <!-- SEMANA 4 -->
+          <div class="semana-card">
+            <div class="semana-header">
+              <div class="semana-num">S04</div>
+              <div class="semana-badge">Semana 4 · Evaluación</div>
+            </div>
+            <h3>Síntesis metodológica</h3>
+            <p class="semana-subtitulo">Aplicación integradora de lo aprendido</p>
+            <p class="semana-desc">Realizaremos un ejercicio práctico donde aplicaremos los marcos metodológicos vistos, articulando distintos enfoques en un análisis integrador.</p>
+            <div class="video-wrapper">
+              <div class="video-label">📹 Video de la semana</div>
+              <iframe src="https://www.youtube.com/embed/rGUCLQmHxY4" title="Síntesis y análisis" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+
+        <div class="unit-nav-bottom">
+          <a href="unidad1.html" class="nav-prev">← Unidad anterior</a>
+          <a href="#" class="nav-next">Siguiente unidad →</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const cursor = document.querySelector('.cursor');
+    const follower = document.querySelector('.cursor-follower');
+    let mouseX=0,mouseY=0,followerX=0,followerY=0,rafId=null;
+
+    document.addEventListener('mousemove',(e)=>{
+      mouseX=e.clientX;mouseY=e.clientY;
+      cursor.style.left=mouseX+'px';cursor.style.top=mouseY+'px';
+      if(!rafId)animateFollower();
+    });
+
+    function animateFollower(){
+      followerX+=(mouseX-followerX)*0.12;followerY+=(mouseY-followerY)*0.12;
+      follower.style.left=followerX+'px';follower.style.top=followerY+'px';
+      if(Math.hypot(mouseX-followerX,mouseY-followerY)>0.5)rafId=requestAnimationFrame(animateFollower);
+      else rafId=null;
+    }
+
+    document.addEventListener('mouseover',(e)=>{if(e.target.matches('a,button,[role="button"]')){cursor.style.transform='translate(-50%,-50%) scale(2)';cursor.style.background='#e879f9';}});
+    document.addEventListener('mouseout',(e)=>{if(e.target.matches('a,button,[role="button"]')){cursor.style.transform='translate(-50%,-50%) scale(1)';cursor.style.background='#3b82f6';}});
+    document.addEventListener('mousedown',()=>cursor.style.transform='translate(-50%,-50%) scale(0.7)');
+    document.addEventListener('mouseup',()=>cursor.style.transform='translate(-50%,-50%) scale(1)');
+
+    // SPOTLIGHT
+    document.querySelectorAll('.semana-card').forEach(card=>{
+      card.addEventListener('mousemove',(e)=>{
+        const rect=card.getBoundingClientRect();
+        card.style.setProperty('--mx',((e.clientX-rect.left)/rect.width*100)+'%');
+        card.style.setProperty('--my',((e.clientY-rect.top)/rect.height*100)+'%');
+      });
+    });
+  </script>
+</body>
+</html>
