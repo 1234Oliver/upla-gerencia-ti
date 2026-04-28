@@ -3,278 +3,734 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Unidad 02 — Desarrollo · Academia Digital</title>
+  <title>Unidad 02 — Aplicaciones Empresariales</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg-deep: #050a14;
-      --bg-dark: #090f1e;
-      --bg-card: #0d1629;
-      --bg-card-hover: #111e38;
-      --accent: #3b82f6;
-      --accent-glow: rgba(59, 130, 246, 0.35);
-      --accent2: #e879f9;
-      --accent3: #10b981;
-      --text-primary: #f0f6ff;
-      --text-muted: #7a9abf;
-      --border: rgba(59, 130, 246, 0.15);
-      --border-hover: rgba(59, 130, 246, 0.45);
-      --font-display: 'Playfair Display', Georgia, serif;
-      --font-body: 'DM Sans', system-ui, sans-serif;
-      --radius: 16px;
-      --transition: cubic-bezier(0.4, 0, 0.2, 1);
+      --bg-deep:#050a14;--bg-dark:#090f1e;--bg-card:#0d1629;--bg-card-hover:#111e38;
+      --accent:#e879f9;--accent-glow:rgba(232,121,249,0.3);
+      --accent-b:#3b82f6;--accent3:#10b981;--gold:#f59e0b;--rose:#f43f5e;
+      --text-primary:#f0f6ff;--text-muted:#7a9abf;
+      --border:rgba(232,121,249,0.15);--border-hover:rgba(232,121,249,0.4);
+      --font-display:'Playfair Display',Georgia,serif;--font-body:'DM Sans',system-ui,sans-serif;
+      --radius:16px;--transition:cubic-bezier(0.4,0,0.2,1);
     }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;overflow-x:hidden;}
+    body{font-family:var(--font-body);background:var(--bg-deep);color:var(--text-primary);cursor:none;overflow-x:hidden;}
 
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; overflow-x: hidden; }
-    body { font-family: var(--font-body); background: var(--bg-deep); color: var(--text-primary); cursor: none; overflow-x: hidden; }
-
-    /* CURSOR */
-    .cursor { position: fixed; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%, -50%); transition: transform 0.1s, background 0.2s; }
-    .cursor-follower { position: fixed; width: 32px; height: 32px; border: 1.5px solid rgba(59,130,246,0.5); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: transform 0.15s var(--transition), width 0.3s, height 0.3s, border-color 0.3s; }
+    .cursor{position:fixed;width:8px;height:8px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s,background 0.2s;}
+    .cursor-follower{position:fixed;width:32px;height:32px;border:1.5px solid rgba(232,121,249,0.45);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left 0.12s,top 0.12s,width 0.3s,height 0.3s,border-color 0.3s;}
 
     /* HEADER */
-    .cat-header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 16px 40px; background: rgba(5,10,20,0.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); animation: slideDown 0.5s var(--transition) both; }
-    @keyframes slideDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
-    .back-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 20px; border-radius: 100px; font-family: var(--font-body); font-size: 0.85rem; cursor: none; transition: all 0.3s var(--transition); text-decoration: none; display: inline-block; }
-    .back-btn:hover { border-color: var(--border-hover); color: var(--text-primary); background: rgba(59,130,246,0.08); }
-    .logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; color: var(--text-primary); text-decoration: none; }
-    .logo-icon { font-size: 1.5rem; color: var(--accent); animation: spin 12s linear infinite; display: inline-block; }
-    @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
-    .cat-progress { font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.06em; }
+    .cat-header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:rgba(5,10,20,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+    .back-btn{background:transparent;border:1px solid rgba(232,121,249,0.2);color:var(--text-muted);padding:8px 20px;border-radius:100px;font-family:var(--font-body);font-size:0.85rem;cursor:none;transition:all 0.3s;text-decoration:none;display:inline-block;}
+    .back-btn:hover{border-color:var(--border-hover);color:var(--text-primary);background:rgba(232,121,249,0.07);}
+    .logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--text-primary);text-decoration:none;}
+    .logo-icon{font-size:1.5rem;color:var(--accent-b);animation:spin 12s linear infinite;display:inline-block;}
+    @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    .cat-progress{font-size:0.8rem;color:var(--text-muted);letter-spacing:0.06em;}
 
     /* LAYOUT */
-    .cat-layout { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 65px); }
+    .cat-layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 65px);}
 
     /* SIDEBAR */
-    .sidebar { background: var(--bg-dark); border-right: 1px solid var(--border); padding: 40px 24px; position: sticky; top: 65px; height: calc(100vh - 65px); overflow-y: auto; }
-    .sidebar-title { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 20px; padding-left: 4px; }
-    .unit-nav { display: flex; flex-direction: column; gap: 8px; }
-    .unit-btn { display: flex; align-items: center; gap: 16px; padding: 14px 16px; background: transparent; border: 1px solid transparent; border-radius: 12px; color: var(--text-muted); font-family: var(--font-body); cursor: none; transition: all 0.3s var(--transition); text-align: left; width: 100%; text-decoration: none; }
-    .unit-btn:hover { background: var(--bg-card); border-color: var(--border); color: var(--text-primary); }
-    .unit-btn.active { background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.4); color: var(--accent); }
-    .unit-btn-num { font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; min-width: 28px; }
-    .unit-btn-label { font-size: 0.9rem; font-weight: 500; }
+    .sidebar{background:var(--bg-dark);border-right:1px solid var(--border);padding:40px 24px;position:sticky;top:65px;height:calc(100vh - 65px);overflow-y:auto;}
+    .sidebar-title{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px;padding-left:4px;}
+    .unit-nav{display:flex;flex-direction:column;gap:8px;}
+    .unit-btn{display:flex;align-items:center;gap:16px;padding:14px 16px;background:transparent;border:1px solid transparent;border-radius:12px;color:var(--text-muted);font-family:var(--font-body);cursor:none;transition:all 0.3s;text-align:left;width:100%;text-decoration:none;}
+    .unit-btn:hover{background:var(--bg-card);border-color:rgba(232,121,249,0.2);color:var(--text-primary);}
+    .unit-btn.active{background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.38);color:var(--accent);}
+    .unit-btn-num{font-family:var(--font-display);font-size:0.75rem;font-weight:700;min-width:28px;}
+    .unit-btn-label{font-size:0.9rem;font-weight:500;}
+    .sidebar-semanas{margin-top:32px;padding-top:24px;border-top:1px solid var(--border);}
+    .sidebar-semanas-title{font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;padding-left:4px;}
+    .semana-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--text-muted);font-size:0.82rem;text-decoration:none;transition:all 0.25s;border:1px solid transparent;}
+    .semana-link:hover{background:var(--bg-card);color:var(--text-primary);border-color:var(--border);}
+    .semana-link-num{font-family:var(--font-display);font-size:0.7rem;font-weight:700;color:var(--accent);min-width:26px;}
 
     /* MAIN */
-    .cat-main { overflow-x: hidden; }
-    .unidad-section { animation: sectionEnter 0.6s var(--transition) forwards; }
-    @keyframes sectionEnter { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
+    .cat-main{overflow-x:hidden;}
 
-    /* UNIDAD HERO */
-    .unidad-hero { padding: 60px 60px 40px; background: linear-gradient(135deg, var(--bg-dark), var(--bg-deep)); border-bottom: 1px solid var(--border); position: relative; overflow: hidden; }
-    .unidad-hero::before { content: ''; position: absolute; top: -80px; right: -80px; width: 300px; height: 300px; background: radial-gradient(circle, rgba(232,121,249,0.06), transparent 70%); border-radius: 50%; }
-    .unidad-tag { display: inline-block; font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent2); margin-bottom: 16px; font-weight: 600; }
-    .unidad-titulo { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800; line-height: 1.15; margin-bottom: 16px; animation: fadeUp 0.6s var(--transition) 0.1s both; }
-    .unidad-subtitulo { color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; max-width: 600px; margin-bottom: 28px; animation: fadeUp 0.6s var(--transition) 0.2s both; }
-    .unidad-meta { display: flex; gap: 24px; flex-wrap: wrap; animation: fadeUp 0.6s var(--transition) 0.3s both; }
-    .unidad-meta span { font-size: 0.85rem; color: var(--text-muted); background: rgba(255,255,255,0.04); padding: 6px 16px; border-radius: 100px; border: 1px solid var(--border); }
+    /* HERO */
+    .unidad-hero{padding:60px 60px 48px;background:linear-gradient(135deg,#0a0a1e,var(--bg-deep));border-bottom:1px solid var(--border);position:relative;overflow:hidden;animation:fadeUp 0.6s both;}
+    .unidad-hero::before{content:'';position:absolute;top:-80px;right:-80px;width:420px;height:420px;background:radial-gradient(circle,rgba(232,121,249,0.07),transparent 70%);border-radius:50%;}
+    .unidad-hero::after{content:'';position:absolute;bottom:-60px;left:25%;width:260px;height:260px;background:radial-gradient(circle,rgba(59,130,246,0.04),transparent 70%);border-radius:50%;}
+    .unidad-tag{display:inline-block;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;font-weight:600;}
+    .unidad-titulo{font-family:var(--font-display);font-size:clamp(2rem,4vw,3.2rem);font-weight:800;line-height:1.15;margin-bottom:16px;}
+    .unidad-subtitulo{color:var(--text-muted);font-size:1.05rem;line-height:1.7;max-width:640px;margin-bottom:32px;}
+    .unidad-meta{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px;}
+    .unidad-meta span{font-size:0.82rem;color:var(--text-muted);background:rgba(255,255,255,0.04);padding:6px 16px;border-radius:100px;border:1px solid var(--border);}
 
-    /* SEMANAS GRID */
-    .semanas-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; padding: 48px 60px; }
-    .semana-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 28px; transition: all 0.4s var(--transition); position: relative; overflow: hidden; opacity: 0; transform: translateY(30px); animation: cardReveal 0.6s var(--transition) forwards; }
-    .semana-card:nth-child(1) { animation-delay: 0.1s; }
-    .semana-card:nth-child(2) { animation-delay: 0.2s; }
-    .semana-card:nth-child(3) { animation-delay: 0.3s; }
-    .semana-card:nth-child(4) { animation-delay: 0.4s; }
-    @keyframes cardReveal { to{opacity:1;transform:translateY(0)} }
-    .semana-card::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(232,121,249,0.06), transparent 60%); opacity: 0; transition: opacity 0.4s; pointer-events: none; }
-    .semana-card:hover::after { opacity: 1; }
-    .semana-card:hover { border-color: rgba(232,121,249,0.3); transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(232,121,249,0.08); }
-    .semana-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .semana-num { font-family: var(--font-display); font-size: 0.75rem; font-weight: 700; color: var(--accent2); letter-spacing: 0.1em; }
-    .semana-badge { font-size: 0.7rem; color: var(--text-muted); background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 100px; padding: 3px 12px; letter-spacing: 0.05em; }
-    .semana-card h3 { font-family: var(--font-display); font-size: 1.2rem; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
-    .semana-subtitulo { color: var(--accent2); font-size: 0.8rem; font-weight: 500; margin-bottom: 12px; letter-spacing: 0.02em; }
-    .semana-desc { color: var(--text-muted); font-size: 0.88rem; line-height: 1.7; margin-bottom: 20px; }
-    .video-wrapper { border-radius: 12px; overflow: hidden; background: #000; }
-    .video-label { font-size: 0.75rem; color: var(--text-muted); padding: 10px 14px; background: rgba(255,255,255,0.03); border-bottom: 1px solid var(--border); letter-spacing: 0.04em; }
-    .video-wrapper iframe { width: 100%; height: 195px; border: none; display: block; transition: filter 0.3s; }
-    .semana-card:not(:hover) .video-wrapper iframe { filter: brightness(0.9); }
+    /* RESUMEN EJECUTIVO */
+    .resumen-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;position:relative;z-index:1;}
+    .resumen-item{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+    .resumen-label{font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:6px;}
+    .resumen-item p{font-size:0.82rem;color:var(--text-muted);line-height:1.5;}
+
+    /* EXAMEN BADGE */
+    .examen-badge{margin:0 60px 0;padding:20px 28px;background:rgba(244,63,94,0.07);border:1px solid rgba(244,63,94,0.3);border-radius:14px;display:flex;align-items:center;gap:16px;}
+    .examen-icon{font-size:1.6rem;flex-shrink:0;}
+    .examen-title{font-family:var(--font-display);font-size:1rem;font-weight:700;color:#f87171;margin-bottom:3px;}
+    .examen-text{font-size:0.83rem;color:var(--text-muted);line-height:1.5;}
+
+    /* SEMANA SECTION */
+    .semana-section{border-bottom:1px solid var(--border);}
+    .semana-header-main{display:flex;align-items:flex-start;gap:20px;padding:36px 60px 28px;}
+    .semana-num-big{font-family:var(--font-display);font-size:4rem;font-weight:900;color:rgba(232,121,249,0.1);line-height:1;flex-shrink:0;}
+    .semana-week-tag{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;}
+    .semana-titulo{font-family:var(--font-display);font-size:1.5rem;font-weight:700;margin-bottom:6px;}
+    .semana-intro{color:var(--text-muted);font-size:0.9rem;line-height:1.6;max-width:600px;}
+
+    /* TEMAS */
+    .temas-container{padding:0 60px 40px;}
+
+    .tema-acordeon{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px;transition:border-color 0.3s;}
+    .tema-acordeon:hover{border-color:var(--border-hover);}
+    .tema-acordeon.open{border-color:rgba(232,121,249,0.4);}
+
+    .tema-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px 22px;background:var(--bg-card);border:none;color:var(--text-primary);font-family:var(--font-body);font-size:0.95rem;font-weight:500;cursor:none;transition:background 0.25s;text-align:left;gap:12px;}
+    .tema-trigger:hover{background:var(--bg-card-hover);}
+    .tema-acordeon.open .tema-trigger{background:rgba(232,121,249,0.07);}
+    .tema-trigger-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0;}
+    .tema-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;border:1px solid var(--border);}
+    .tema-nombre{font-weight:600;font-size:0.93rem;}
+    .tema-desc-short{font-size:0.76rem;color:var(--text-muted);margin-top:1px;}
+    .tema-chevron{color:var(--text-muted);font-size:0.7rem;transition:transform 0.35s var(--transition);flex-shrink:0;}
+    .tema-acordeon.open .tema-chevron{transform:rotate(180deg);color:var(--accent);}
+
+    .tema-body{max-height:0;overflow:hidden;transition:max-height 0.55s var(--transition);}
+    .tema-acordeon.open .tema-body{max-height:3000px;}
+    .tema-content{padding:26px 22px 28px;background:rgba(9,15,30,0.7);border-top:1px solid var(--border);}
+
+    /* CONTENIDO */
+    .content-section{margin-bottom:22px;}
+    .content-section:last-child{margin-bottom:0;}
+    .content-title{font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-primary);}
+    .content-text{color:var(--text-muted);font-size:0.87rem;line-height:1.75;}
+
+    /* MINI CARDS */
+    .mini-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:12px;}
+    .mini-card{background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:14px 16px;transition:border-color 0.25s,transform 0.25s;}
+    .mini-card:hover{border-color:var(--border-hover);transform:translateY(-3px);}
+    .mini-card-label{font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:5px;}
+    .mini-card-title{font-size:0.86rem;font-weight:600;margin-bottom:4px;}
+    .mini-card-text{font-size:0.77rem;color:var(--text-muted);line-height:1.5;}
+
+    /* NIVELES STACK */
+    .niveles-stack{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+    .nivel-item{display:flex;align-items:flex-start;gap:14px;background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:14px 16px;border-left:3px solid;}
+    .nivel-sigla{font-family:var(--font-display);font-size:1.1rem;font-weight:900;min-width:52px;flex-shrink:0;}
+    .nivel-badge{font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;font-weight:700;min-width:72px;padding-top:1px;flex-shrink:0;}
+    .nivel-info-title{font-size:0.87rem;font-weight:600;margin-bottom:2px;}
+    .nivel-info-text{font-size:0.77rem;color:var(--text-muted);line-height:1.5;}
+
+    /* PILARES GRID */
+    .pilares-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:12px;}
+    .pilar-card{background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;transition:all 0.3s;}
+    .pilar-card:hover{border-color:var(--border-hover);background:var(--bg-card);}
+    .pilar-num{font-family:var(--font-display);font-size:1.6rem;font-weight:900;color:rgba(232,121,249,0.18);margin-bottom:6px;}
+    .pilar-title{font-size:0.84rem;font-weight:700;margin-bottom:4px;}
+    .pilar-text{font-size:0.75rem;color:var(--text-muted);line-height:1.5;}
+
+    /* APPS GRID — tarjetas grandes para CRM/SCM/ERP/SIG */
+    .apps-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px;}
+    .app-card{background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:18px 20px;transition:all 0.3s;position:relative;overflow:hidden;}
+    .app-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--app-color,var(--accent));opacity:0.6;}
+    .app-card:hover{border-color:var(--border-hover);transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.35);}
+    .app-card-head{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+    .app-sigla{font-family:var(--font-display);font-size:1.5rem;font-weight:900;color:var(--app-color,var(--accent));}
+    .app-name{font-size:0.75rem;color:var(--text-muted);line-height:1.3;}
+    .app-name strong{display:block;font-size:0.88rem;color:var(--text-primary);font-weight:600;}
+    .app-desc{font-size:0.80rem;color:var(--text-muted);line-height:1.6;margin-bottom:10px;}
+    .app-examples{display:flex;flex-wrap:wrap;gap:6px;}
+    .app-tag{font-size:0.68rem;padding:3px 10px;border-radius:100px;border:1px solid;font-weight:500;}
+
+    /* TRES PLANOS */
+    .planos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px;}
+    .plano-card{background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center;transition:all 0.3s;position:relative;}
+    .plano-card:hover{border-color:var(--border-hover);transform:translateY(-4px);}
+    .plano-icon{font-size:1.8rem;margin-bottom:10px;}
+    .plano-title{font-family:var(--font-display);font-size:0.95rem;font-weight:700;margin-bottom:6px;}
+    .plano-subtitle{font-size:0.72rem;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;font-weight:600;}
+    .plano-text{font-size:0.77rem;color:var(--text-muted);line-height:1.55;}
+
+    /* HIGHLIGHT BOXES */
+    .highlight-box{background:rgba(232,121,249,0.05);border:1px solid rgba(232,121,249,0.2);border-radius:10px;padding:16px 18px;margin-top:14px;}
+    .highlight-box.blue{background:rgba(59,130,246,0.06);border-color:rgba(59,130,246,0.22);}
+    .highlight-box.green{background:rgba(16,185,129,0.06);border-color:rgba(16,185,129,0.22);}
+    .highlight-box.gold{background:rgba(245,158,11,0.06);border-color:rgba(245,158,11,0.22);}
+    .highlight-box.red{background:rgba(248,113,113,0.07);border-color:rgba(248,113,113,0.22);}
+    .highlight-label{font-size:0.63rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:6px;}
+    .highlight-box p{font-size:0.83rem;color:var(--text-muted);line-height:1.6;}
+
+    /* COMPARE TABLE */
+    .compare-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:0.81rem;}
+    .compare-table th{text-align:left;padding:10px 14px;background:rgba(232,121,249,0.07);color:var(--accent);font-weight:600;letter-spacing:0.04em;border-bottom:1px solid var(--border);}
+    .compare-table td{padding:10px 14px;border-bottom:1px solid rgba(232,121,249,0.06);color:var(--text-muted);vertical-align:top;line-height:1.5;}
+    .compare-table tr:last-child td{border-bottom:none;}
+    .compare-table tr:hover td{background:rgba(232,121,249,0.03);}
+    .compare-table td:first-child{color:var(--text-primary);font-weight:500;}
+
+    /* VIDEO */
+    .video-section{margin-top:20px;}
+    .video-label-bar{font-size:0.72rem;color:var(--text-muted);padding:8px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px 10px 0 0;letter-spacing:0.04em;}
+    .video-frame{border-radius:0 0 10px 10px;overflow:hidden;background:#000;}
+    .video-frame iframe{width:100%;height:210px;border:none;display:block;}
 
     /* NAV BOTTOM */
-    .unit-nav-bottom { display: flex; justify-content: space-between; align-items: center; padding: 20px 60px 60px; }
-    .nav-prev, .nav-next { padding: 12px 28px; border-radius: 100px; font-family: var(--font-body); font-size: 0.9rem; font-weight: 500; cursor: none; transition: all 0.3s var(--transition); text-decoration: none; display: inline-block; }
-    .nav-prev { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
-    .nav-prev:hover { border-color: var(--border-hover); color: var(--text-primary); }
-    .nav-next { background: var(--accent); border: 1px solid var(--accent); color: #fff; }
-    .nav-next:hover { background: #2563eb; box-shadow: 0 8px 24px var(--accent-glow); transform: translateY(-2px); }
+    .unit-nav-bottom{display:flex;justify-content:space-between;align-items:center;padding:28px 60px 60px;}
+    .nav-prev,.nav-next{padding:12px 28px;border-radius:100px;font-family:var(--font-body);font-size:0.9rem;font-weight:500;cursor:none;transition:all 0.3s;text-decoration:none;display:inline-block;}
+    .nav-prev{background:transparent;border:1px solid var(--border);color:var(--text-muted);}
+    .nav-prev:hover{border-color:var(--border-hover);color:var(--text-primary);}
+    .nav-next{background:var(--accent);border:1px solid var(--accent);color:#fff;}
+    .nav-next:hover{filter:brightness(1.1);box-shadow:0 8px 24px var(--accent-glow);transform:translateY(-2px);}
 
-    /* UTILS */
-    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--bg-deep); }
-    ::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.3); border-radius: 100px; }
-    ::-webkit-scrollbar-thumb:hover { background: rgba(59,130,246,0.6); }
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-      .cat-layout { grid-template-columns: 1fr; }
-      .sidebar { position: static; height: auto; border-right: none; border-bottom: 1px solid var(--border); padding: 24px; }
-      .unit-nav { flex-direction: row; flex-wrap: wrap; }
-      .semanas-grid { grid-template-columns: 1fr; padding: 30px 24px; }
-      .unidad-hero { padding: 40px 24px 30px; }
-      .unit-nav-bottom { padding: 20px 24px 40px; }
+    ::-webkit-scrollbar{width:6px;}
+    ::-webkit-scrollbar-track{background:var(--bg-deep);}
+    ::-webkit-scrollbar-thumb{background:rgba(232,121,249,0.25);border-radius:100px;}
+    ::-webkit-scrollbar-thumb:hover{background:rgba(232,121,249,0.5);}
+
+    @media(max-width:900px){
+      .cat-layout{grid-template-columns:1fr;}
+      .sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border);padding:24px;}
+      .unit-nav{flex-direction:row;flex-wrap:wrap;}
+      .semana-header-main,.temas-container,.unit-nav-bottom,.examen-badge{padding-left:24px;padding-right:24px;}
+      .unidad-hero{padding:40px 24px 36px;}
+      .resumen-grid,.apps-grid,.planos-grid{grid-template-columns:1fr;}
     }
-    @media (max-width: 680px) {
-      .cat-header { padding: 12px 20px; }
-      .cat-progress { display: none; }
-      .cursor, .cursor-follower { display: none; }
-      body { cursor: default; }
+    @media(max-width:680px){
+      .cat-header{padding:12px 20px;}
+      .cat-progress{display:none;}
+      .cursor,.cursor-follower{display:none;}
+      body{cursor:default;}
+      .mini-cards,.pilares-grid{grid-template-columns:1fr;}
     }
   </style>
 </head>
 <body>
 
-  <div class="cursor"></div>
-  <div class="cursor-follower"></div>
+<div class="cursor"></div>
+<div class="cursor-follower"></div>
 
-  <header class="cat-header">
-    <a href="index.html" class="back-btn">← Inicio</a>
-    <a href="index.html" class="logo">
-      <span class="logo-icon">⬡</span>
-      <span>Academia Digital</span>
-    </a>
-    <div class="cat-progress">Unidad 2 de 4 — Desarrollo</div>
-  </header>
+<header class="cat-header">
+  <a href="index.html" class="back-btn">← Inicio</a>
+  <a href="index.html" class="logo"><span class="logo-icon">⬡</span><span>Academia Digital</span></a>
+  <div class="cat-progress">Unidad 2 de 4 — Aplicaciones Empresariales</div>
+</header>
 
-  <div class="cat-layout">
-    <aside class="sidebar">
-      <p class="sidebar-title">Programa del curso</p>
-      <nav class="unit-nav">
-        <a class="unit-btn" href="unidad1.html">
-          <span class="unit-btn-num">01</span>
-          <span class="unit-btn-label">Fundamentos</span>
-        </a>
-        <a class="unit-btn active" href="unidad2.html">
-          <span class="unit-btn-num">02</span>
-          <span class="unit-btn-label">Desarrollo</span>
-        </a>
-        <a class="unit-btn" href="#">
-          <span class="unit-btn-num">03</span>
-          <span class="unit-btn-label">Aplicación</span>
-        </a>
-        <a class="unit-btn" href="#">
-          <span class="unit-btn-num">04</span>
-          <span class="unit-btn-label">Integración</span>
-        </a>
-      </nav>
-    </aside>
+<div class="cat-layout">
 
-    <main class="cat-main">
-      <div class="unidad-section">
-        <div class="unidad-hero">
-          <div class="unidad-tag">Unidad 02</div>
-          <h1 class="unidad-titulo">Metodologías de Desarrollo</h1>
-          <p class="unidad-subtitulo">Profundización en herramientas, marcos de trabajo y enfoques metodológicos aplicados al campo de estudio.</p>
-          <div class="unidad-meta">
-            <span>📅 4 semanas</span>
-            <span>🎯 Nivel intermedio</span>
-            <span>🎬 4 videos</span>
-          </div>
-        </div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <p class="sidebar-title">Programa del curso</p>
+    <nav class="unit-nav">
+      <a class="unit-btn" href="unidad1.html"><span class="unit-btn-num">01</span><span class="unit-btn-label">Fundamentos</span></a>
+      <a class="unit-btn active" href="unidad2.html"><span class="unit-btn-num">02</span><span class="unit-btn-label">Aplicaciones</span></a>
+      <a class="unit-btn" href="#"><span class="unit-btn-num">03</span><span class="unit-btn-label">Aplicación</span></a>
+      <a class="unit-btn" href="#"><span class="unit-btn-num">04</span><span class="unit-btn-label">Integración</span></a>
+    </nav>
+    <div class="sidebar-semanas">
+      <p class="sidebar-semanas-title">Semanas</p>
+      <a href="#semana05" class="semana-link"><span class="semana-link-num">S05</span>SI en los negocios</a>
+      <a href="#semana06" class="semana-link"><span class="semana-link-num">S06</span>Estructura Informática EPS</a>
+      <a href="#semana07" class="semana-link"><span class="semana-link-num">S07</span>EAS y aplicaciones</a>
+      <a href="#semana08" class="semana-link"><span class="semana-link-num">S08</span>Nube híbrida · Examen</a>
+    </div>
+  </aside>
 
-        <div class="semanas-grid">
-          <!-- SEMANA 1 -->
-          <div class="semana-card">
-            <div class="semana-header">
-              <div class="semana-num">S01</div>
-              <div class="semana-badge">Semana 1</div>
-            </div>
-            <h3>Modelos y marcos de trabajo</h3>
-            <p class="semana-subtitulo">Estructuras metodológicas para el análisis</p>
-            <p class="semana-desc">Estudiaremos los principales marcos conceptuales que guían el trabajo académico y profesional, identificando sus características, ventajas y contextos de aplicación.</p>
-            <div class="video-wrapper">
-              <div class="video-label">📹 Video de la semana</div>
-              <iframe src="https://www.youtube.com/embed/mt1yqlMDRTQ" title="Metodologías de investigación" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-          </div>
+  <main class="cat-main">
 
-          <!-- SEMANA 2 -->
-          <div class="semana-card">
-            <div class="semana-header">
-              <div class="semana-num">S02</div>
-              <div class="semana-badge">Semana 2</div>
-            </div>
-            <h3>Investigación y fuentes</h3>
-            <p class="semana-subtitulo">Búsqueda, evaluación y uso de información</p>
-            <p class="semana-desc">Aprenderemos a identificar fuentes confiables, utilizar bases de datos académicas y aplicar criterios de evaluación de la calidad de la información.</p>
-            <div class="video-wrapper">
-              <div class="video-label">📹 Video de la semana</div>
-              <iframe src="https://www.youtube.com/embed/B-8gqC1GYPE" title="Cómo investigar correctamente" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-          </div>
+    <!-- HERO -->
+    <div class="unidad-hero">
+      <div class="unidad-tag">Unidad 02</div>
+      <h1 class="unidad-titulo">Aplicaciones Empresariales de los Sistemas de Información</h1>
+      <p class="unidad-subtitulo">Del dato al negocio: cómo los sistemas de información potencian la toma de decisiones, articulan la estructura informática y conectan toda la empresa mediante ERP, CRM, SCM y aplicaciones en la nube.</p>
+      <div class="unidad-meta">
+        <span>📅 4 semanas</span><span>🎯 Nivel intermedio</span><span>🎬 4 videos</span><span>🎓 Examen parcial</span>
+      </div>
+      <div class="resumen-grid">
+        <div class="resumen-item"><div class="resumen-label" style="color:var(--accent)">Objetivo</div><p>Comprender cómo los SI apoyan la estrategia empresarial y se articulan en aplicaciones concretas.</p></div>
+        <div class="resumen-item"><div class="resumen-label" style="color:var(--accent3)">Alcance</div><p>Inteligencia de negocios, EAS, CRM, SCM, ERP, SIG y nube híbrida empresarial.</p></div>
+        <div class="resumen-item"><div class="resumen-label" style="color:var(--gold)">Cierre</div><p>Consolidado de evaluación formativa y sumativa (Unidades I–II) + Examen Parcial.</p></div>
+      </div>
+    </div>
 
-          <!-- SEMANA 3 -->
-          <div class="semana-card">
-            <div class="semana-header">
-              <div class="semana-num">S03</div>
-              <div class="semana-badge">Semana 3</div>
-            </div>
-            <h3>Diseño y planificación</h3>
-            <p class="semana-subtitulo">De la idea al proyecto estructurado</p>
-            <p class="semana-desc">Convertiremos ideas en proyectos académicos sólidos mediante técnicas de planificación, gestión del tiempo y definición de objetivos SMART.</p>
-            <div class="video-wrapper">
-              <div class="video-label">📹 Video de la semana</div>
-              <iframe src="https://www.youtube.com/embed/H5HdxcA6ZuI" title="Planificación de proyectos" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-          </div>
-
-          <!-- SEMANA 4 -->
-          <div class="semana-card">
-            <div class="semana-header">
-              <div class="semana-num">S04</div>
-              <div class="semana-badge">Semana 4 · Evaluación</div>
-            </div>
-            <h3>Síntesis metodológica</h3>
-            <p class="semana-subtitulo">Aplicación integradora de lo aprendido</p>
-            <p class="semana-desc">Realizaremos un ejercicio práctico donde aplicaremos los marcos metodológicos vistos, articulando distintos enfoques en un análisis integrador.</p>
-            <div class="video-wrapper">
-              <div class="video-label">📹 Video de la semana</div>
-              <iframe src="https://www.youtube.com/embed/rGUCLQmHxY4" title="Síntesis y análisis" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-          </div>
-        </div>
-
-        <div class="unit-nav-bottom">
-          <a href="unidad1.html" class="nav-prev">← Unidad anterior</a>
-          <a href="#" class="nav-next">Siguiente unidad →</a>
+    <!-- ══════════════════════════════════════ -->
+    <!-- SEMANA 05 -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="semana-section" id="semana05">
+      <div class="semana-header-main">
+        <div class="semana-num-big">05</div>
+        <div>
+          <div class="semana-week-tag">Semana 5 · Negocios e Inteligencia</div>
+          <h2 class="semana-titulo">Los SI en los Negocios e Inteligencia de Datos</h2>
+          <p class="semana-intro">Cómo los sistemas de información impulsan la ventaja competitiva y cómo la inteligencia de negocios transforma bases de datos en decisiones estratégicas.</p>
         </div>
       </div>
-    </main>
-  </div>
+      <div class="temas-container">
 
-  <script>
-    const cursor = document.querySelector('.cursor');
-    const follower = document.querySelector('.cursor-follower');
-    let mouseX=0,mouseY=0,followerX=0,followerY=0,rafId=null;
+        <!-- 5.1 SI en los negocios -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.3);">🏢</div>
+              <div><div class="tema-nombre">Los sistemas de información en los negocios</div><div class="tema-desc-short">Ventaja competitiva, cadena de valor y alineación estratégica</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">El SI como motor del negocio</div>
+              <p class="content-text">Los sistemas de información ya no son solo soporte técnico; son <strong style="color:var(--text-primary)">fuente directa de ventaja competitiva</strong>. Según el modelo de Porter, las empresas pueden usar los SI para reducir costos, diferenciar productos, abrir nuevos mercados o cambiar el modelo de negocio por completo.</p>
+              <p class="content-text" style="margin-top:10px;">La cadena de valor de Porter identifica actividades primarias (logística, producción, ventas, servicio) y de apoyo (RRHH, TI, abastecimiento) donde los SI generan eficiencia y diferenciación.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Usos estratégicos de los SI en los negocios</div>
+              <div class="mini-cards">
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent)">Eficiencia operativa</div><div class="mini-card-title">Automatización</div><div class="mini-card-text">Reducir tiempos y costos en procesos repetitivos: facturación, inventario, nómina.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent3)">Diferenciación</div><div class="mini-card-title">Personalización</div><div class="mini-card-text">Usar datos de clientes para ofrecer productos y experiencias únicas y relevantes.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--gold)">Nuevos mercados</div><div class="mini-card-title">Expansión digital</div><div class="mini-card-text">E-commerce, marketplaces y plataformas digitales que no requieren presencia física.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent-b)">Toma de decisiones</div><div class="mini-card-title">Data-driven</div><div class="mini-card-text">Pasar de decisiones intuitivas a decisiones basadas en evidencia y análisis de datos.</div></div>
+              </div>
+            </div>
+            <div class="highlight-box blue"><div class="highlight-label" style="color:var(--accent-b)">📌 Caso real</div><p>Amazon usa sus SI para ajustar precios millones de veces al día, anticipar qué productos comprarás antes de que busques, y optimizar rutas de entrega en tiempo real. Todo ello son ventajas competitivas sostenidas por sistemas de información avanzados.</p></div>
+          </div></div>
+        </div>
 
-    document.addEventListener('mousemove',(e)=>{
-      mouseX=e.clientX;mouseY=e.clientY;
-      cursor.style.left=mouseX+'px';cursor.style.top=mouseY+'px';
-      if(!rafId)animateFollower();
+        <!-- 5.2 Inteligencia de negocios -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3);">🧠</div>
+              <div><div class="tema-nombre">Fundamentos de inteligencia de negocios</div><div class="tema-desc-short">Business Intelligence: de los datos crudos al conocimiento accionable</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">¿Qué es Business Intelligence (BI)?</div>
+              <p class="content-text">Business Intelligence es el conjunto de tecnologías, procesos y metodologías que permiten <strong style="color:var(--text-primary)">recopilar, integrar, analizar y presentar datos empresariales</strong> para apoyar decisiones más rápidas y fundamentadas. El BI convierte datos históricos y actuales en patrones, tendencias y alertas accionables.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Arquitectura de un sistema BI</div>
+              <div class="niveles-stack">
+                <div class="nivel-item" style="border-left-color:#6b7280;"><div class="nivel-sigla" style="color:#6b7280;font-size:0.9rem;min-width:70px;">Fuentes</div><div><div class="nivel-info-title">Datos operacionales y externos</div><div class="nivel-info-text">ERP, CRM, hojas de cálculo, APIs externas, redes sociales, sensores IoT.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#3b82f6;"><div class="nivel-sigla" style="color:#3b82f6;font-size:0.9rem;min-width:70px;">ETL</div><div><div class="nivel-info-title">Extract, Transform, Load</div><div class="nivel-info-text">Los datos se extraen, limpian, transforman y cargan en el repositorio central.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#e879f9;"><div class="nivel-sigla" style="color:#e879f9;font-size:0.9rem;min-width:70px;">DWH</div><div><div class="nivel-info-title">Data Warehouse</div><div class="nivel-info-text">Repositorio centralizado, optimizado para consultas analíticas rápidas a gran escala.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#10b981;"><div class="nivel-sigla" style="color:#10b981;font-size:0.9rem;min-width:70px;">OLAP</div><div><div class="nivel-info-title">Análisis multidimensional</div><div class="nivel-info-text">Cubos de datos para análisis por múltiples dimensiones: tiempo, región, producto, canal.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#f59e0b;"><div class="nivel-sigla" style="color:#f59e0b;font-size:0.9rem;min-width:70px;">Dashb.</div><div><div class="nivel-info-title">Visualización — Power BI, Tableau, Looker</div><div class="nivel-info-text">Dashboards interactivos, reportes y alertas que comunican insights a los tomadores de decisiones.</div></div></div>
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Bases de datos y administración de la información</div>
+              <p class="content-text">La base del BI es una gestión sólida de bases de datos. Los sistemas gestores (SGBD) más usados son SQL Server, Oracle, PostgreSQL y MySQL para datos estructurados; MongoDB y Cassandra para datos no estructurados. El gobierno de datos (Data Governance) asegura calidad, seguridad y trazabilidad.</p>
+            </div>
+            <div class="video-section">
+              <div class="video-label-bar">📹 Video de la semana — SI en los Negocios y Business Intelligence</div>
+              <div class="video-frame"><iframe src="https://www.youtube.com/embed/Pmdps2kK_5M" title="Business Intelligence" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- SEMANA 06 -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="semana-section" id="semana06">
+      <div class="semana-header-main">
+        <div class="semana-num-big">06</div>
+        <div>
+          <div class="semana-week-tag">Semana 6 · Estructura Informática</div>
+          <h2 class="semana-titulo">Diseño de la Estructura Informática Integral — EPS</h2>
+          <p class="semana-intro">Cómo se organiza arquitectónicamente un Sistema de Información Gerencial a través de los tres planos que articulan toda la estructura informática de una empresa.</p>
+        </div>
+      </div>
+      <div class="temas-container">
+
+        <!-- 6.1 Estructura informática integral -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);">🏛️</div>
+              <div><div class="tema-nombre">Estructura Informática Integral de los SIG</div><div class="tema-desc-short">Cómo se diseña la arquitectura completa de un SI gerencial</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">¿Qué es la estructura informática integral?</div>
+              <p class="content-text">Es el diseño holístico de todos los componentes —personas, procesos, datos y tecnología— que forman el sistema de información gerencial de una organización. El objetivo es que todos los niveles de la empresa (operativo, táctico y estratégico) estén correctamente servidos por la información que necesitan, en el momento que la necesitan.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Principios de diseño</div>
+              <div class="mini-cards">
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent)">Integración</div><div class="mini-card-title">Un solo flujo</div><div class="mini-card-text">Todos los módulos comparten datos en tiempo real. Ningún silo de información.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent3)">Escalabilidad</div><div class="mini-card-title">Diseñado para crecer</div><div class="mini-card-text">La arquitectura soporta el crecimiento del negocio sin rediseños costosos.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--gold)">Seguridad</div><div class="mini-card-title">Por capas</div><div class="mini-card-text">Controles de acceso según rol y nivel jerárquico. Auditoría completa.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent-b)">Disponibilidad</div><div class="mini-card-title">Alta disponibilidad</div><div class="mini-card-text">Redundancia y planes de recuperación ante fallos para garantizar continuidad.</div></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+        <!-- 6.2 Tres planos EPS -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.3);">📐</div>
+              <div><div class="tema-nombre">Los Tres Planos: EPS</div><div class="tema-desc-short">Estratégico · Procesos · Sistemas — la arquitectura en tres dimensiones</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">La arquitectura EPS en tres planos</div>
+              <p class="content-text">El modelo de los Tres Planos organiza la estructura informática de una empresa de forma que cada dimensión responda a una pregunta distinta: <strong style="color:var(--text-primary)">¿Qué queremos lograr? ¿Cómo lo hacemos? ¿Con qué lo hacemos?</strong></p>
+              <div class="planos-grid">
+                <div class="plano-card">
+                  <div class="plano-icon">🎯</div>
+                  <div class="plano-title">Plano Estratégico</div>
+                  <div class="plano-subtitle" style="color:var(--accent)">Capa E</div>
+                  <p class="plano-text">Define los objetivos del negocio, la visión tecnológica y las metas que el SI debe alcanzar. Responde: <em>¿Por qué y para qué existe el sistema?</em> Incluye KPIs, cuadro de mando y alineación con el plan de negocio.</p>
+                </div>
+                <div class="plano-card">
+                  <div class="plano-icon">⚙️</div>
+                  <div class="plano-title">Plano de Procesos</div>
+                  <div class="plano-subtitle" style="color:var(--accent3)">Capa P</div>
+                  <p class="plano-text">Mapea los flujos de trabajo, roles, responsabilidades y reglas de negocio. Responde: <em>¿Cómo fluye la información entre personas y áreas?</em> Usa herramientas como BPMN y diagramas de flujo.</p>
+                </div>
+                <div class="plano-card">
+                  <div class="plano-icon">🖥️</div>
+                  <div class="plano-title">Plano de Sistemas</div>
+                  <div class="plano-subtitle" style="color:var(--gold)">Capa S</div>
+                  <p class="plano-text">Especifica la arquitectura técnica: hardware, software, bases de datos, redes e integraciones. Responde: <em>¿Con qué tecnología se implementa?</em> Incluye diagramas de arquitectura y contratos de APIs.</p>
+                </div>
+              </div>
+            </div>
+            <div class="highlight-box green"><div class="highlight-label" style="color:var(--accent3)">✅ Por qué importa</div><p>Un fallo frecuente en las empresas es diseñar solo el plano de sistemas (comprar software) sin definir primero el plano estratégico y de procesos. Esto resulta en herramientas que nadie usa o que no responden a las necesidades reales del negocio.</p></div>
+            <div class="video-section">
+              <div class="video-label-bar">📹 Video de la semana — Estructura Informática y Diseño de SIG</div>
+              <div class="video-frame"><iframe src="https://www.youtube.com/embed/B-8gqC1GYPE" title="Diseño de Sistemas de Información" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- SEMANA 07 -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="semana-section" id="semana07">
+      <div class="semana-header-main">
+        <div class="semana-num-big">07</div>
+        <div>
+          <div class="semana-week-tag">Semana 7 · Aplicaciones Empresariales</div>
+          <h2 class="semana-titulo">EAS y los Grandes Sistemas Empresariales</h2>
+          <p class="semana-intro">Las aplicaciones empresariales que integran, automatizan y conectan toda la organización: ERP, CRM, SCM y SIG — los cuatro pilares del software empresarial moderno.</p>
+        </div>
+      </div>
+      <div class="temas-container">
+
+        <!-- 7.1 EAS -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.3);">📱</div>
+              <div><div class="tema-nombre">Aplicaciones Empresariales — EAS</div><div class="tema-desc-short">Enterprise Application Software: definición, propósito y características clave</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">¿Qué es el Enterprise Application Software (EAS)?</div>
+              <p class="content-text">El EAS es software diseñado específicamente para las necesidades de las organizaciones empresariales a gran escala. A diferencia del software de productividad personal, el EAS gestiona <strong style="color:var(--text-primary)">procesos críticos de negocio de forma integrada</strong>: finanzas, logística, ventas, producción, recursos humanos y más.</p>
+              <p class="content-text" style="margin-top:10px;">Sus características distintivas son: multiusuario concurrente, altamente parametrizable, integración entre módulos, auditoría y trazabilidad, y capacidad de escalar con el negocio.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Características del EAS moderno</div>
+              <div class="mini-cards">
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--gold)">Integración</div><div class="mini-card-title">Datos compartidos</div><div class="mini-card-text">Todos los módulos acceden a la misma base de datos central. Elimina duplicidades.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent)">Tiempo real</div><div class="mini-card-title">Visibilidad total</div><div class="mini-card-text">Los cambios en un área se reflejan inmediatamente en todas las demás áreas relacionadas.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent3)">Modularidad</div><div class="mini-card-title">Implementación gradual</div><div class="mini-card-text">Se puede implementar módulo a módulo según las prioridades y el presupuesto disponible.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent-b)">Compliance</div><div class="mini-card-title">Cumplimiento normativo</div><div class="mini-card-text">Soporte para regulaciones fiscales, laborales y contables de cada país o industria.</div></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+        <!-- 7.2 Usos comunes EAS -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3);">🔗</div>
+              <div><div class="tema-nombre">Usos comunes de las aplicaciones empresariales y EAS</div><div class="tema-desc-short">Casos de uso por área funcional: finanzas, RRHH, logística, ventas y producción</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Aplicaciones por área funcional</div>
+              <div class="niveles-stack">
+                <div class="nivel-item" style="border-left-color:#3b82f6;"><div class="nivel-sigla" style="color:#3b82f6;font-size:0.9rem;min-width:76px;">Finanzas</div><div><div class="nivel-info-title">Contabilidad, tesorería y control presupuestal</div><div class="nivel-info-text">Gestión de cuentas por pagar/cobrar, libro mayor, flujo de caja, presupuestos y reportes financieros regulatorios.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#10b981;"><div class="nivel-sigla" style="color:#10b981;font-size:0.9rem;min-width:76px;">RRHH</div><div><div class="nivel-info-title">Gestión de personas y talento</div><div class="nivel-info-text">Nómina, control de asistencia, reclutamiento, evaluaciones de desempeño y plan de carrera.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#f59e0b;"><div class="nivel-sigla" style="color:#f59e0b;font-size:0.9rem;min-width:76px;">Logística</div><div><div class="nivel-info-title">Inventario, almacén y distribución</div><div class="nivel-info-text">Control de stock en tiempo real, gestión de almacenes (WMS), rutas de entrega y trazabilidad de productos.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#e879f9;"><div class="nivel-sigla" style="color:#e879f9;font-size:0.9rem;min-width:76px;">Ventas</div><div><div class="nivel-info-title">Gestión de clientes y pipeline comercial</div><div class="nivel-info-text">Seguimiento de oportunidades, cotizaciones, pedidos, comisiones y análisis del ciclo de ventas completo.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#6366f1;"><div class="nivel-sigla" style="color:#6366f1;font-size:0.9rem;min-width:76px;">Producción</div><div><div class="nivel-info-title">Planificación y control de manufactura</div><div class="nivel-info-text">MRP, planificación de capacidad, órdenes de producción, control de calidad y mantenimiento de equipos.</div></div></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+        <!-- 7.3 CRM, SCM, ERP, SIG -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(232,121,249,0.1);border-color:rgba(232,121,249,0.3);">🗺️</div>
+              <div><div class="tema-nombre">Tipos de sistemas: CRM, SCM, ERP, SIG</div><div class="tema-desc-short">Los cuatro grandes sistemas empresariales explicados en profundidad</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Los 4 grandes sistemas empresariales</div>
+              <div class="apps-grid">
+
+                <!-- CRM -->
+                <div class="app-card" style="--app-color:#e879f9;">
+                  <div class="app-card-head">
+                    <div class="app-sigla">CRM</div>
+                    <div class="app-name"><strong>Customer Relationship Management</strong>Gestión de relaciones con clientes</div>
+                  </div>
+                  <p class="app-desc">Sistema que centraliza toda la información de los clientes —interacciones, historial de compras, preferencias y seguimiento comercial— para mejorar la experiencia del cliente y aumentar la retención y ventas.</p>
+                  <div class="app-examples">
+                    <span class="app-tag" style="color:#e879f9;border-color:rgba(232,121,249,0.35);">Salesforce</span>
+                    <span class="app-tag" style="color:#e879f9;border-color:rgba(232,121,249,0.35);">HubSpot</span>
+                    <span class="app-tag" style="color:#e879f9;border-color:rgba(232,121,249,0.35);">Zoho CRM</span>
+                    <span class="app-tag" style="color:#e879f9;border-color:rgba(232,121,249,0.35);">MS Dynamics</span>
+                  </div>
+                </div>
+
+                <!-- SCM -->
+                <div class="app-card" style="--app-color:#10b981;">
+                  <div class="app-card-head">
+                    <div class="app-sigla">SCM</div>
+                    <div class="app-name"><strong>Supply Chain Management</strong>Gestión de la cadena de suministro</div>
+                  </div>
+                  <p class="app-desc">Coordina y optimiza el flujo de materiales, información y dinero desde los proveedores hasta el cliente final. Integra compras, producción, almacenamiento y distribución en una sola visión.</p>
+                  <div class="app-examples">
+                    <span class="app-tag" style="color:#10b981;border-color:rgba(16,185,129,0.35);">SAP SCM</span>
+                    <span class="app-tag" style="color:#10b981;border-color:rgba(16,185,129,0.35);">Oracle SCM</span>
+                    <span class="app-tag" style="color:#10b981;border-color:rgba(16,185,129,0.35);">Infor SCM</span>
+                    <span class="app-tag" style="color:#10b981;border-color:rgba(16,185,129,0.35);">Blue Yonder</span>
+                  </div>
+                </div>
+
+                <!-- ERP -->
+                <div class="app-card" style="--app-color:#f59e0b;">
+                  <div class="app-card-head">
+                    <div class="app-sigla">ERP</div>
+                    <div class="app-name"><strong>Enterprise Resource Planning</strong>Planificación de recursos empresariales</div>
+                  </div>
+                  <p class="app-desc">El sistema central de la empresa. Integra en una única plataforma finanzas, contabilidad, RRHH, producción, ventas y logística. Todos los procesos comparten la misma base de datos en tiempo real.</p>
+                  <div class="app-examples">
+                    <span class="app-tag" style="color:#f59e0b;border-color:rgba(245,158,11,0.35);">SAP S/4HANA</span>
+                    <span class="app-tag" style="color:#f59e0b;border-color:rgba(245,158,11,0.35);">Oracle ERP</span>
+                    <span class="app-tag" style="color:#f59e0b;border-color:rgba(245,158,11,0.35);">Microsoft D365</span>
+                    <span class="app-tag" style="color:#f59e0b;border-color:rgba(245,158,11,0.35);">Odoo</span>
+                  </div>
+                </div>
+
+                <!-- SIG -->
+                <div class="app-card" style="--app-color:#3b82f6;">
+                  <div class="app-card-head">
+                    <div class="app-sigla">SIG</div>
+                    <div class="app-name"><strong>Sistema de Información Geográfica</strong>Análisis y visualización espacial</div>
+                  </div>
+                  <p class="app-desc">Captura, almacena, analiza y presenta datos asociados a ubicaciones geográficas. Fundamental en logística, retail, urbanismo, salud pública y cualquier negocio donde la ubicación sea una variable estratégica.</p>
+                  <div class="app-examples">
+                    <span class="app-tag" style="color:#3b82f6;border-color:rgba(59,130,246,0.35);">ArcGIS</span>
+                    <span class="app-tag" style="color:#3b82f6;border-color:rgba(59,130,246,0.35);">QGIS</span>
+                    <span class="app-tag" style="color:#3b82f6;border-color:rgba(59,130,246,0.35);">Google Maps API</span>
+                    <span class="app-tag" style="color:#3b82f6;border-color:rgba(59,130,246,0.35);">Mapbox</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-title">¿Cómo se relacionan entre sí?</div>
+              <table class="compare-table">
+                <thead><tr><th>Sistema</th><th>Enfoque principal</th><th>Usuarios clave</th><th>Integra con</th></tr></thead>
+                <tbody>
+                  <tr><td>CRM</td><td>Cliente y ventas</td><td>Ventas, Marketing, Soporte</td><td>ERP, SCM, BI</td></tr>
+                  <tr><td>SCM</td><td>Cadena de suministro</td><td>Compras, Logística, Producción</td><td>ERP, SIG, IoT</td></tr>
+                  <tr><td>ERP</td><td>Toda la empresa</td><td>Todos los departamentos</td><td>CRM, SCM, BI, SIG</td></tr>
+                  <tr><td>SIG</td><td>Dimensión espacial</td><td>Logística, Marketing, Operaciones</td><td>ERP, SCM, BI</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="video-section">
+              <div class="video-label-bar">📹 Video de la semana — EAS, CRM, ERP y SCM</div>
+              <div class="video-frame"><iframe src="https://www.youtube.com/embed/H5HdxcA6ZuI" title="EAS y Sistemas Empresariales" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- SEMANA 08 -->
+    <!-- ══════════════════════════════════════ -->
+    <section class="semana-section" id="semana08">
+      <div class="semana-header-main">
+        <div class="semana-num-big">08</div>
+        <div>
+          <div class="semana-week-tag">Semana 8 · Cierre de Unidad · Evaluación</div>
+          <h2 class="semana-titulo">Nube Híbrida para el Negocio Inteligente</h2>
+          <p class="semana-intro">Gestión de aplicaciones en la nube híbrida, software de nube híbrida empresarial y cierre evaluativo de las dos primeras unidades del curso.</p>
+        </div>
+      </div>
+      <div class="temas-container">
+
+        <!-- 8.1 Gestión apps nube híbrida -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.3);">☁️</div>
+              <div><div class="tema-nombre">Gestión de aplicaciones para la nube híbrida</div><div class="tema-desc-short">Estrategias de migración, orquestación y gestión en entornos mixtos</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">¿Qué significa gestionar en la nube híbrida?</div>
+              <p class="content-text">Gestionar aplicaciones en un entorno híbrido implica operar simultáneamente workloads en infraestructura on-premise y en nubes públicas, asegurando <strong style="color:var(--text-primary)">coherencia, seguridad y rendimiento</strong> sin importar dónde corra cada componente.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Las 5 Rs de la migración a la nube híbrida</div>
+              <div class="niveles-stack">
+                <div class="nivel-item" style="border-left-color:#3b82f6;"><div class="nivel-sigla" style="color:#3b82f6;font-size:1rem;min-width:80px;">Rehost</div><div><div class="nivel-info-title">Lift & Shift</div><div class="nivel-info-text">Mover la aplicación tal cual a la nube sin cambios. Rápido pero sin aprovechar las ventajas cloud-native.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#10b981;"><div class="nivel-sigla" style="color:#10b981;font-size:1rem;min-width:80px;">Replatform</div><div><div class="nivel-info-title">Lift, Tinker & Shift</div><div class="nivel-info-text">Pequeñas optimizaciones antes de migrar: cambiar la base de datos a managed service, por ejemplo.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#e879f9;"><div class="nivel-sigla" style="color:#e879f9;font-size:1rem;min-width:80px;">Refactor</div><div><div class="nivel-info-title">Re-arquitectura</div><div class="nivel-info-text">Rediseñar la app para aprovechar microservicios, contenedores y APIs nativas de la nube.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#f59e0b;"><div class="nivel-sigla" style="color:#f59e0b;font-size:1rem;min-width:80px;">Repurchase</div><div><div class="nivel-info-title">Drop & Shop</div><div class="nivel-info-text">Abandonar la app actual y adoptar un SaaS equivalente. Ej: migrar ERP propio a SAP Cloud.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#6b7280;"><div class="nivel-sigla" style="color:#6b7280;font-size:1rem;min-width:80px;">Retain</div><div><div class="nivel-info-title">Mantener on-premise</div><div class="nivel-info-text">Algunas aplicaciones son más eficientes o seguras manteniéndose fuera de la nube por ahora.</div></div></div>
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Herramientas de gestión híbrida</div>
+              <div class="mini-cards">
+                <div class="mini-card"><div class="mini-card-label" style="color:#3b82f6">Azure Arc</div><div class="mini-card-title">Microsoft</div><div class="mini-card-text">Extiende la gestión de Azure a cualquier infraestructura: on-premise, otras nubes o edge.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:#f59e0b">AWS Outposts</div><div class="mini-card-title">Amazon</div><div class="mini-card-text">Lleva la infraestructura y servicios AWS a los centros de datos propios del cliente.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:#10b981">Anthos</div><div class="mini-card-title">Google Cloud</div><div class="mini-card-text">Plataforma para gestionar aplicaciones Kubernetes en cualquier nube o on-premise.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent)">Red Hat OpenShift</div><div class="mini-card-title">IBM / Red Hat</div><div class="mini-card-text">Plataforma Kubernetes empresarial para entornos híbridos y multi-cloud agnóstica al proveedor.</div></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+        <!-- 8.2 Software nube híbrida -->
+        <div class="tema-acordeon">
+          <button class="tema-trigger">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);">🤖</div>
+              <div><div class="tema-nombre">Software de nube híbrida para un negocio más inteligente</div><div class="tema-desc-short">IA, analytics y automatización sobre infraestructura híbrida</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">El negocio inteligente sobre nube híbrida</div>
+              <p class="content-text">La nube híbrida no es solo infraestructura — es la plataforma sobre la que las empresas construyen capacidades de <strong style="color:var(--text-primary)">inteligencia artificial, automatización y analítica avanzada</strong> que convierten datos en ventajas competitivas en tiempo real.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Capas del negocio inteligente</div>
+              <div class="pilares-grid">
+                <div class="pilar-card"><div class="pilar-num" style="color:rgba(232,121,249,0.25);">01</div><div class="pilar-title">IA y Machine Learning</div><div class="pilar-text">Modelos predictivos, detección de fraude, recomendaciones y automatización de decisiones rutinarias.</div></div>
+                <div class="pilar-card"><div class="pilar-num" style="color:rgba(232,121,249,0.25);">02</div><div class="pilar-title">Analytics en tiempo real</div><div class="pilar-text">Procesamiento de streams de datos para detectar tendencias y anomalías antes de que impacten el negocio.</div></div>
+                <div class="pilar-card"><div class="pilar-num" style="color:rgba(232,121,249,0.25);">03</div><div class="pilar-title">Automatización RPA</div><div class="pilar-text">Robots de software que ejecutan tareas repetitivas: conciliación bancaria, alta de proveedores, reportes.</div></div>
+                <div class="pilar-card"><div class="pilar-num" style="color:rgba(232,121,249,0.25);">04</div><div class="pilar-title">APIs e Integración</div><div class="pilar-text">Ecosistema de APIs que conecta sistemas internos, socios y plataformas externas en tiempo real.</div></div>
+                <div class="pilar-card"><div class="pilar-num" style="color:rgba(232,121,249,0.25);">05</div><div class="pilar-title">Ciberseguridad adaptativa</div><div class="pilar-text">Seguridad Zero Trust que verifica continuamente identidades y comportamientos en entornos híbridos.</div></div>
+              </div>
+            </div>
+            <div class="highlight-box"><div class="highlight-label" style="color:var(--accent)">💡 Tendencia clave</div><p>Las empresas que combinan nube híbrida con IA embebida en sus EAS (SAP con Business AI, Salesforce Einstein, Microsoft Copilot para D365) reportan hasta 3× más velocidad en la toma de decisiones operativas.</p></div>
+            <div class="video-section">
+              <div class="video-label-bar">📹 Video de la semana — Nube Híbrida y Negocio Inteligente</div>
+              <div class="video-frame"><iframe src="https://www.youtube.com/embed/rGUCLQmHxY4" title="Nube Híbrida Empresarial" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+
+      <!-- EXAMEN BADGE -->
+      <div class="examen-badge" style="margin-bottom:40px;">
+        <div class="examen-icon">🎓</div>
+        <div>
+          <div class="examen-title">Consolidado — Evaluación Formativa y Sumativa (Unidades I – II)</div>
+          <p class="examen-text">Esta semana cierra el ciclo evaluativo de las dos primeras unidades. Se realizará el <strong style="color:var(--text-primary)">Examen Parcial</strong> que cubre todos los contenidos de Unidad I (Fundamentos e Infraestructura) y Unidad II (Aplicaciones, EAS y Nube Híbrida). Repasa los acordeones de ambas unidades y consolida los conceptos de TPS, MIS, DSS, EIS, CRM, SCM, ERP, SIG y los tres planos EPS.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- NAV BOTTOM -->
+    <div class="unit-nav-bottom">
+      <a href="unidad1.html" class="nav-prev">← Unidad anterior</a>
+      <a href="#" class="nav-next">Siguiente unidad →</a>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // CURSOR
+  const cursor=document.querySelector('.cursor'),follower=document.querySelector('.cursor-follower');
+  let mX=0,mY=0,fX=0,fY=0,rafId=null;
+  document.addEventListener('mousemove',e=>{
+    mX=e.clientX;mY=e.clientY;
+    cursor.style.left=mX+'px';cursor.style.top=mY+'px';
+    if(!rafId)animF();
+  });
+  function animF(){
+    fX+=(mX-fX)*0.12;fY+=(mY-fY)*0.12;
+    follower.style.left=fX+'px';follower.style.top=fY+'px';
+    if(Math.hypot(mX-fX,mY-fY)>0.5)rafId=requestAnimationFrame(animF);else rafId=null;
+  }
+  document.addEventListener('mouseover',e=>{if(e.target.matches('a,button')){cursor.style.transform='translate(-50%,-50%) scale(2)';cursor.style.background='#3b82f6';}});
+  document.addEventListener('mouseout',e=>{if(e.target.matches('a,button')){cursor.style.transform='translate(-50%,-50%) scale(1)';cursor.style.background='#e879f9';}});
+  document.addEventListener('mousedown',()=>cursor.style.transform='translate(-50%,-50%) scale(0.7)');
+  document.addEventListener('mouseup',()=>cursor.style.transform='translate(-50%,-50%) scale(1)');
+
+  // ACORDEÓN
+  document.querySelectorAll('.tema-trigger').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const ac=btn.closest('.tema-acordeon');
+      const wasOpen=ac.classList.contains('open');
+      document.querySelectorAll('.tema-acordeon.open').forEach(a=>a.classList.remove('open'));
+      if(!wasOpen)ac.classList.add('open');
     });
+  });
 
-    function animateFollower(){
-      followerX+=(mouseX-followerX)*0.12;followerY+=(mouseY-followerY)*0.12;
-      follower.style.left=followerX+'px';follower.style.top=followerY+'px';
-      if(Math.hypot(mouseX-followerX,mouseY-followerY)>0.5)rafId=requestAnimationFrame(animateFollower);
-      else rafId=null;
-    }
-
-    document.addEventListener('mouseover',(e)=>{if(e.target.matches('a,button,[role="button"]')){cursor.style.transform='translate(-50%,-50%) scale(2)';cursor.style.background='#e879f9';}});
-    document.addEventListener('mouseout',(e)=>{if(e.target.matches('a,button,[role="button"]')){cursor.style.transform='translate(-50%,-50%) scale(1)';cursor.style.background='#3b82f6';}});
-    document.addEventListener('mousedown',()=>cursor.style.transform='translate(-50%,-50%) scale(0.7)');
-    document.addEventListener('mouseup',()=>cursor.style.transform='translate(-50%,-50%) scale(1)');
-
-    // SPOTLIGHT
-    document.querySelectorAll('.semana-card').forEach(card=>{
-      card.addEventListener('mousemove',(e)=>{
-        const rect=card.getBoundingClientRect();
-        card.style.setProperty('--mx',((e.clientX-rect.left)/rect.width*100)+'%');
-        card.style.setProperty('--my',((e.clientY-rect.top)/rect.height*100)+'%');
-      });
+  // HIGHLIGHT semana activa en sidebar
+  const semanas=document.querySelectorAll('.semana-section');
+  const links=document.querySelectorAll('.semana-link');
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        links.forEach(l=>{l.style.color='';l.style.background='';l.style.borderColor='transparent';});
+        const a=document.querySelector(`.semana-link[href="#${e.target.id}"]`);
+        if(a){a.style.color='var(--accent)';a.style.background='rgba(232,121,249,0.07)';a.style.borderColor='rgba(232,121,249,0.2)';}
+      }
     });
-  </script>
+  },{threshold:0.35});
+  semanas.forEach(s=>io.observe(s));
+</script>
 </body>
 </html>
