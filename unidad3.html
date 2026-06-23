@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Unidad III — Infraestructura de Tecnologías de Información: Gobierno de TI (COBIT, ITIL, ISO 38500), Gestión de Servicios, Diseño y Transición, Gestión Operativa. Curso UPLA Gerencia de Sistemas de Información." />
+  <meta name="keywords" content="gobierno TI, COBIT 2019, ITIL 4, ISO 38500, gestión servicios, SLA, service desk, incident management, UPLA, SIG" />
+  <title>Unidad 03 — Infraestructura de Tecnologías de Información</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep:#050a14;--bg-dark:#090f1e;--bg-card:#0d1629;--bg-card-hover:#111e38;
+      --accent:#10b981;--accent-glow:rgba(16,185,129,0.3);
+      --accent-b:#3b82f6;--accent3:#e879f9;--gold:#f59e0b;--rose:#f43f5e;
+      --text-primary:#f0f6ff;--text-muted:#7a9abf;
+      --border:rgba(16,185,129,0.15);--border-hover:rgba(16,185,129,0.4);
+      --font-display:'Playfair Display',Georgia,serif;--font-body:'DM Sans',system-ui,sans-serif;
+      --radius:16px;--transition:cubic-bezier(0.4,0,0.2,1);
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;overflow-x:hidden;}
+    body{font-family:var(--font-body);background:var(--bg-deep);color:var(--text-primary);cursor:none;overflow-x:hidden;}
+
+    .cursor{position:fixed;width:8px;height:8px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s,background 0.2s;}
+    .cursor-follower{position:fixed;width:32px;height:32px;border:1.5px solid rgba(16,185,129,0.45);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left 0.12s,top 0.12s,width 0.3s,height 0.3s,border-color 0.3s;}
+
+    .cat-header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:rgba(5,10,20,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+    .back-btn{background:transparent;border:1px solid rgba(16,185,129,0.2);color:var(--text-muted);padding:8px 20px;border-radius:100px;font-family:var(--font-body);font-size:0.85rem;cursor:none;transition:all 0.3s;text-decoration:none;display:inline-block;}
+    .back-btn:hover{border-color:var(--border-hover);color:var(--text-primary);background:rgba(16,185,129,0.07);}
+    .logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--text-primary);text-decoration:none;}
+    .logo-icon{font-size:1.5rem;color:var(--accent-b);animation:spin 12s linear infinite;display:inline-block;}
+    @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    .cat-progress{font-size:0.8rem;color:var(--text-muted);letter-spacing:0.06em;}
+
+    .cat-layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 65px);}
+
+    .sidebar{background:var(--bg-dark);border-right:1px solid var(--border);padding:40px 24px;position:sticky;top:65px;height:calc(100vh - 65px);overflow-y:auto;}
+    .sidebar-title{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px;padding-left:4px;}
+    .unit-nav{display:flex;flex-direction:column;gap:8px;}
+    .unit-btn{display:flex;align-items:center;gap:16px;padding:14px 16px;background:transparent;border:1px solid transparent;border-radius:12px;color:var(--text-muted);font-family:var(--font-body);cursor:none;transition:all 0.3s;text-align:left;width:100%;text-decoration:none;}
+    .unit-btn:hover{background:var(--bg-card);border-color:rgba(16,185,129,0.2);color:var(--text-primary);}
+    .unit-btn.active{background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.38);color:var(--accent);}
+    .unit-btn-num{font-family:var(--font-display);font-size:0.75rem;font-weight:700;min-width:28px;}
+    .unit-btn-label{font-size:0.9rem;font-weight:500;}
+    .sidebar-semanas{margin-top:32px;padding-top:24px;border-top:1px solid var(--border);}
+    .sidebar-semanas-title{font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;padding-left:4px;}
+    .semana-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--text-muted);font-size:0.82rem;text-decoration:none;transition:all 0.25s;border:1px solid transparent;}
+    .semana-link:hover{background:var(--bg-card);color:var(--text-primary);border-color:var(--border);}
+    .semana-link-num{font-family:var(--font-display);font-size:0.7rem;font-weight:700;color:var(--accent);min-width:26px;}
+
+    .cat-main{overflow-x:hidden;}
+
+    .unidad-hero{padding:60px 60px 48px;background:linear-gradient(135deg,#0a1a14,var(--bg-deep));border-bottom:1px solid var(--border);position:relative;overflow:hidden;animation:fadeUp 0.6s both;}
+    .unidad-hero::before{content:'';position:absolute;top:-80px;right:-80px;width:420px;height:420px;background:radial-gradient(circle,rgba(16,185,129,0.07),transparent 70%);border-radius:50%;}
+    .unidad-hero::after{content:'';position:absolute;bottom:-60px;left:25%;width:260px;height:260px;background:radial-gradient(circle,rgba(59,130,246,0.04),transparent 70%);border-radius:50%;}
+    .unidad-tag{display:inline-block;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;font-weight:600;}
+    .unidad-titulo{font-family:var(--font-display);font-size:clamp(2rem,4vw,3.2rem);font-weight:800;line-height:1.15;margin-bottom:16px;}
+    .unidad-subtitulo{color:var(--text-muted);font-size:1.05rem;line-height:1.7;max-width:680px;margin-bottom:32px;}
+    .unidad-meta{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px;}
+    .unidad-meta span{font-size:0.82rem;color:var(--text-muted);background:rgba(255,255,255,0.04);padding:6px 16px;border-radius:100px;border:1px solid var(--border);}
+    .resumen-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;position:relative;z-index:1;}
+    .resumen-item{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+    .resumen-label{font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:6px;}
+    .resumen-item p{font-size:0.82rem;color:var(--text-muted);line-height:1.5;}
+
+    .semana-section{border-bottom:1px solid var(--border);}
+    .semana-header-main{display:flex;align-items:flex-start;gap:20px;padding:36px 60px 28px;}
+    .semana-num-big{font-family:var(--font-display);font-size:4rem;font-weight:900;color:rgba(16,185,129,0.1);line-height:1;flex-shrink:0;}
+    .semana-week-tag{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;}
+    .semana-titulo{font-family:var(--font-display);font-size:1.5rem;font-weight:700;margin-bottom:6px;}
+    .semana-intro{color:var(--text-muted);font-size:0.9rem;line-height:1.6;max-width:640px;}
+
+    .temas-container{padding:0 60px 40px;}
+
+    .tema-acordeon{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px;transition:border-color 0.3s;}
+    .tema-acordeon:hover{border-color:var(--border-hover);}
+    .tema-acordeon.open{border-color:rgba(16,185,129,0.4);}
+
+    .tema-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px 22px;background:var(--bg-card);border:none;color:var(--text-primary);font-family:var(--font-body);font-size:0.95rem;font-weight:500;cursor:none;transition:background 0.25s;text-align:left;gap:12px;}
+    .tema-trigger:hover{background:var(--bg-card-hover);}
+    .tema-acordeon.open .tema-trigger{background:rgba(16,185,129,0.07);}
+    .tema-trigger-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0;}
+    .tema-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;border:1px solid var(--border);}
+    .tema-nombre{font-weight:600;font-size:0.93rem;}
+    .tema-desc-short{font-size:0.76rem;color:var(--text-muted);margin-top:1px;}
+    .tema-chevron{color:var(--text-muted);font-size:0.7rem;transition:transform 0.35s var(--transition);flex-shrink:0;}
+    .tema-acordeon.open .tema-chevron{transform:rotate(180deg);color:var(--accent);}
+
+    .tema-body{max-height:0;overflow:hidden;transition:max-height 0.55s var(--transition);}
+    .tema-acordeon.open .tema-body{max-height:5000px;}
+    .tema-content{padding:26px 22px 28px;background:rgba(9,15,30,0.7);border-top:1px solid var(--border);}
+
+    .content-section{margin-bottom:22px;}
+    .content-section:last-child{margin-bottom:0;}
+    .content-title{font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-primary);}
+    .content-text{color:var(--text-muted);font-size:0.87rem;line-height:1.75;}
+
+    .mini-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:12px;}
+    .mini-card{background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:14px 16px;transition:border-color 0.25s,transform 0.25s;}
+    .mini-card:hover{border-color:var(--border-hover);transform:translateY(-3px);}
+    .mini-card-label{font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:5px;}
+    .mini-card-title{font-size:0.86rem;font-weight:600;margin-bottom:4px;}
+    .mini-card-text{font-size:0.77rem;color:var(--text-muted);line-height:1.5;}
+
+    .niveles-stack{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+    .nivel-item{display:flex;align-items:flex-start;gap:14px;background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:14px 16px;border-left:3px solid;}
+    .nivel-sigla{font-family:var(--font-display);font-size:1.1rem;font-weight:900;min-width:52px;flex-shrink:0;}
+    .nivel-info-title{font-size:0.87rem;font-weight:600;margin-bottom:2px;}
+    .nivel-info-text{font-size:0.77rem;color:var(--text-muted);line-height:1.5;}
+
+    .pilares-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:12px;}
+    .pilar-card{background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;transition:all 0.3s;}
+    .pilar-card:hover{border-color:var(--border-hover);background:var(--bg-card);}
+    .pilar-num{font-family:var(--font-display);font-size:1.6rem;font-weight:900;color:rgba(16,185,129,0.18);margin-bottom:6px;}
+    .pilar-title{font-size:0.84rem;font-weight:700;margin-bottom:4px;}
+    .pilar-text{font-size:0.75rem;color:var(--text-muted);line-height:1.5;}
+
+    .planos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px;}
+    .plano-card{background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:18px;text-align:center;transition:all 0.3s;}
+    .plano-card:hover{border-color:var(--border-hover);transform:translateY(-4px);}
+    .plano-icon{font-size:1.8rem;margin-bottom:10px;}
+    .plano-title{font-family:var(--font-display);font-size:0.95rem;font-weight:700;margin-bottom:6px;}
+    .plano-subtitle{font-size:0.72rem;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px;font-weight:600;}
+    .plano-text{font-size:0.77rem;color:var(--text-muted);line-height:1.55;}
+
+    .highlight-box{background:rgba(16,185,129,0.05);border:1px solid rgba(16,185,129,0.2);border-radius:10px;padding:16px 18px;margin-top:14px;}
+    .highlight-box.blue{background:rgba(59,130,246,0.06);border-color:rgba(59,130,246,0.22);}
+    .highlight-box.gold{background:rgba(245,158,11,0.06);border-color:rgba(245,158,11,0.22);}
+    .highlight-box.red{background:rgba(248,113,113,0.07);border-color:rgba(248,113,113,0.22);}
+    .highlight-label{font-size:0.63rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:6px;}
+    .highlight-box p{font-size:0.83rem;color:var(--text-muted);line-height:1.6;}
+
+    .compare-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:0.81rem;}
+    .compare-table th{text-align:left;padding:10px 14px;background:rgba(16,185,129,0.07);color:var(--accent);font-weight:600;letter-spacing:0.04em;border-bottom:1px solid var(--border);}
+    .compare-table td{padding:10px 14px;border-bottom:1px solid rgba(16,185,129,0.06);color:var(--text-muted);vertical-align:top;line-height:1.5;}
+    .compare-table tr:last-child td{border-bottom:none;}
+    .compare-table tr:hover td{background:rgba(16,185,129,0.03);}
+    .compare-table td:first-child{color:var(--text-primary);font-weight:500;}
+
+    .diagram-wrap{margin-top:16px;background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:20px;overflow-x:auto;}
+    .diagram-wrap svg{display:block;margin:0 auto;max-width:100%;height:auto;}
+
+    .video-section{margin-top:20px;}
+    .video-label-bar{font-size:0.72rem;color:var(--text-muted);padding:8px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px 10px 0 0;letter-spacing:0.04em;}
+    .video-frame{border-radius:0 0 10px 10px;overflow:hidden;background:#000;}
+    .video-frame iframe{width:100%;height:210px;border:none;display:block;}
+
+    .bibliografia-block{margin:0 60px 40px;padding:22px 24px;background:var(--bg-card);border:1px solid var(--border);border-radius:14px;}
+    .bibliografia-block .content-title{font-size:0.9rem;margin-bottom:12px;color:var(--accent);}
+    .bib-list{list-style:none;padding:0;}
+    .bib-list li{font-size:0.8rem;color:var(--text-muted);line-height:1.65;padding:6px 0 6px 16px;border-left:2px solid rgba(16,185,129,0.25);margin-bottom:8px;}
+    .bib-list li em{color:var(--text-primary);font-style:normal;font-weight:500;}
+
+    .unit-nav-bottom{display:flex;justify-content:space-between;align-items:center;padding:28px 60px 60px;}
+    .nav-prev,.nav-next{padding:12px 28px;border-radius:100px;font-family:var(--font-body);font-size:0.9rem;font-weight:500;cursor:none;transition:all 0.3s;text-decoration:none;display:inline-block;}
+    .nav-prev{background:transparent;border:1px solid var(--border);color:var(--text-muted);}
+    .nav-prev:hover{border-color:var(--border-hover);color:var(--text-primary);}
+    .nav-next{background:var(--accent);border:1px solid var(--accent);color:#fff;}
+    .nav-next:hover{filter:brightness(1.1);box-shadow:0 8px 24px var(--accent-glow);transform:translateY(-2px);}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+    ::-webkit-scrollbar{width:6px;}
+    ::-webkit-scrollbar-track{background:var(--bg-deep);}
+    ::-webkit-scrollbar-thumb{background:rgba(16,185,129,0.25);border-radius:100px;}
+    ::-webkit-scrollbar-thumb:hover{background:rgba(16,185,129,0.5);}
+
+    @media(max-width:900px){
+      .cat-layout{grid-template-columns:1fr;}
+      .sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border);padding:24px;}
+      .unit-nav{flex-direction:row;flex-wrap:wrap;}
+      .semana-header-main,.temas-container,.unit-nav-bottom,.bibliografia-block{padding-left:24px;padding-right:24px;}
+      .bibliografia-block{margin-left:24px;margin-right:24px;}
+      .unidad-hero{padding:40px 24px 36px;}
+      .resumen-grid,.planos-grid{grid-template-columns:1fr;}
+    }
+    @media(max-width:680px){
+      .cat-header{padding:12px 20px;}
+      .cat-progress{display:none;}
+      .cursor,.cursor-follower{display:none;}
+      body{cursor:default;}
+      .mini-cards,.pilares-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor"></div>
+<div class="cursor-follower"></div>
+
+<header class="cat-header">
+  <a href="index.html" class="back-btn">← Inicio</a>
+  <a href="index.html" class="logo"><span class="logo-icon">⬡</span><span>Academia Digital</span></a>
+  <div class="cat-progress">Unidad 3 de 4 — Infraestructura de TI</div>
+</header>
+
+<div class="cat-layout">
+
+  <aside class="sidebar">
+    <p class="sidebar-title">Programa del curso</p>
+    <nav class="unit-nav">
+      <a class="unit-btn" href="unidad1.html"><span class="unit-btn-num">01</span><span class="unit-btn-label">Fundamentos</span></a>
+      <a class="unit-btn" href="unidad2.html"><span class="unit-btn-num">02</span><span class="unit-btn-label">Aplicaciones</span></a>
+      <a class="unit-btn active" href="unidad3.html"><span class="unit-btn-num">03</span><span class="unit-btn-label">Infraestructura TI</span></a>
+      <a class="unit-btn" href="unidad4.html"><span class="unit-btn-num">04</span><span class="unit-btn-label">Desarrollo de Sistemas</span></a>
+    </nav>
+    <div class="sidebar-semanas">
+      <p class="sidebar-semanas-title">Semanas</p>
+      <a href="#semana09" class="semana-link"><span class="semana-link-num">S09</span>Gobierno de TI</a>
+      <a href="#semana10" class="semana-link"><span class="semana-link-num">S10</span>Gestión de Servicios</a>
+      <a href="#semana11" class="semana-link"><span class="semana-link-num">S11</span>Diseño y Transición</a>
+      <a href="#semana12" class="semana-link"><span class="semana-link-num">S12</span>Gestión Operativa</a>
+    </div>
+  </aside>
+
+  <main class="cat-main">
+
+    <div class="unidad-hero">
+      <div class="unidad-tag">Unidad 03</div>
+      <h1 class="unidad-titulo">Infraestructura de Tecnologías de Información</h1>
+      <p class="unidad-subtitulo">Gobierno, gestión de servicios y operaciones de TI alineadas al negocio: marcos COBIT 2019, ITIL 4 e ISO/IEC 38500 para crear valor, controlar riesgos y entregar servicios confiables en entornos empresariales y cloud.</p>
+      <div class="unidad-meta">
+        <span>📅 4 semanas</span><span>🎯 Nivel intermedio-avanzado</span><span>🎬 4 videos</span><span>📚 4 bibliografías</span>
+      </div>
+      <div class="resumen-grid">
+        <div class="resumen-item"><div class="resumen-label" style="color:var(--accent)">Objetivo</div><p>Comprender cómo gobernar, diseñar, transicionar y operar la infraestructura y servicios de TI con marcos internacionales reconocidos.</p></div>
+        <div class="resumen-item"><div class="resumen-label" style="color:var(--accent-b)">Alcance</div><p>Gobierno de TI, ITIL 4 (estrategia, diseño, transición, operación), SLA, CMDB, Service Desk e incident/problem/change management.</p></div>
+        <div class="resumen-item"><div class="resumen-label" style="color:var(--gold)">Cierre</div><p>Consolidación de prácticas operativas y evaluación formativa de la Unidad III antes de integrar con desarrollo de sistemas.</p></div>
+      </div>
+    </div>
+
+    <!-- SEMANA 09 -->
+    <section class="semana-section" id="semana09">
+      <div class="semana-header-main">
+        <div class="semana-num-big">09</div>
+        <div>
+          <div class="semana-week-tag">Semana 9 · Gobierno Corporativo de TI</div>
+          <h2 class="semana-titulo">Gobierno de Tecnologías de Información</h2>
+          <p class="semana-intro">Cómo las organizaciones dirigen, controlan y evalúan el uso de TI para alinearla con objetivos estratégicos, crear valor, gestionar riesgos y asegurar el cumplimiento mediante marcos como COBIT 2019, ITIL 4 e ISO/IEC 38500.</p>
+        </div>
+      </div>
+      <div class="temas-container">
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);">🏛️</div>
+              <div><div class="tema-nombre">Fundamentos del Gobierno de TI</div><div class="tema-desc-short">Definición, objetivos, alineación estratégica y creación de valor</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">¿Qué es el Gobierno de TI?</div>
+              <p class="content-text">El <strong style="color:var(--text-primary)">Gobierno de TI (IT Governance)</strong> es el conjunto de procesos, estructuras y relaciones que permiten a la alta dirección dirigir y controlar las TI de la organización. Según ISACA, garantiza que las inversiones tecnológicas apoyen los objetivos de negocio, optimicen recursos y gestionen riesgos de forma sistemática. A diferencia de la <em>gestión de TI</em> (cómo se ejecuta), el gobierno responde: <em>¿qué debe hacer TI y quién decide?</em></p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Objetivos del gobierno de TI</div>
+              <div class="mini-cards">
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent)">Alineación</div><div class="mini-card-title">Estrategia</div><div class="mini-card-text">Vincular proyectos y operaciones de TI con metas corporativas y KPIs de negocio.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent-b)">Valor</div><div class="mini-card-title">Creación de valor</div><div class="mini-card-text">Medir retorno de inversiones TI mediante beneficios tangibles e intangibles.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--gold)">Riesgo</div><div class="mini-card-title">Gestión de riesgos</div><div class="mini-card-text">Identificar, evaluar y mitigar riesgos tecnológicos, de ciberseguridad y cumplimiento.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent3)">Procesos</div><div class="mini-card-title">Gestión de procesos</div><div class="mini-card-text">Estandarizar decisiones, políticas, comités y métricas para consistencia organizacional.</div></div>
+              </div>
+            </div>
+            <div class="highlight-box"><div class="highlight-label" style="color:var(--accent)">Principio ISO/IEC 38500</div><p>La norma ISO/IEC 38500 establece seis principios directores: responsabilidad, estrategia, adquisición, desempeño, conformidad y comportamiento humano. El consejo de administración y la alta dirección deben evaluar, dirigir y monitorear el uso de TI en la organización.</p></div>
+          </div></div>
+        </div>
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3);">📋</div>
+              <div><div class="tema-nombre">Marcos de referencia: COBIT 2019, ITIL 4 e ISO/IEC 38500</div><div class="tema-desc-short">Frameworks complementarios para gobernar y gestionar servicios de TI</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Los tres marcos en perspectiva</div>
+              <div class="planos-grid">
+                <div class="plano-card">
+                  <div class="plano-icon">🎯</div>
+                  <div class="plano-title">COBIT 2019</div>
+                  <div class="plano-subtitle">ISACA</div>
+                  <p class="plano-text">Marco de gobierno y gestión empresarial de TI. Define 40 objetivos de gobierno/gestión en 5 dominios (EDM, APO, BAI, DSS, MEA). Enfoque en cumplimiento, riesgo y valor.</p>
+                </div>
+                <div class="plano-card">
+                  <div class="plano-icon">⚙️</div>
+                  <div class="plano-title">ITIL 4</div>
+                  <div class="plano-subtitle">Axelos</div>
+                  <p class="plano-text">Best practices para gestión de servicios de TI (ITSM). Service Value System (SVS), cadena de valor del servicio y 34 prácticas de gestión. Enfoque operativo y orientado al cliente.</p>
+                </div>
+                <div class="plano-card">
+                  <div class="plano-icon">📜</div>
+                  <div class="plano-title">ISO/IEC 38500</div>
+                  <div class="plano-subtitle">ISO</div>
+                  <p class="plano-text">Estándar internacional de gobierno de TI para directivos. Principios de evaluación, dirección y monitoreo. Marco de alto nivel, no prescriptivo en procesos.</p>
+                </div>
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Tabla comparativa de marcos</div>
+              <table class="compare-table">
+                <thead><tr><th>Marco</th><th>Enfoque principal</th><th>Audiencia</th><th>Entregables clave</th></tr></thead>
+                <tbody>
+                  <tr><td>COBIT 2019</td><td>Gobierno y gestión integral de TI</td><td>CIO, auditores, comités de TI</td><td>Mapas de objetivos, maturity models, RACI de procesos</td></tr>
+                  <tr><td>ITIL 4</td><td>Gestión de servicios (ITSM)</td><td>Service managers, operaciones, Service Desk</td><td>Catálogo de servicios, SLAs, procesos operativos</td></tr>
+                  <tr><td>ISO/IEC 38500</td><td>Principios de gobierno para directivos</td><td>Consejo, CEO, alta dirección</td><td>Políticas de gobierno, evaluaciones periódicas</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Diagrama: relación Gobierno ↔ Gestión ↔ Operación</div>
+              <div class="diagram-wrap">
+                <svg viewBox="0 0 640 220" width="640" height="220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama gobierno gestión operación TI">
+                  <rect x="20" y="70" width="180" height="80" rx="10" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="1.5"/>
+                  <text x="110" y="105" text-anchor="middle" fill="#f0f6ff" font-size="13" font-weight="600">GOBIERNO</text>
+                  <text x="110" y="125" text-anchor="middle" fill="#7a9abf" font-size="10">COBIT · ISO 38500</text>
+                  <rect x="230" y="70" width="180" height="80" rx="10" fill="rgba(59,130,246,0.12)" stroke="#3b82f6" stroke-width="1.5"/>
+                  <text x="320" y="105" text-anchor="middle" fill="#f0f6ff" font-size="13" font-weight="600">GESTIÓN</text>
+                  <text x="320" y="125" text-anchor="middle" fill="#7a9abf" font-size="10">ITIL · PMO · Portfolio</text>
+                  <rect x="440" y="70" width="180" height="80" rx="10" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="1.5"/>
+                  <text x="530" y="105" text-anchor="middle" fill="#f0f6ff" font-size="13" font-weight="600">OPERACIÓN</text>
+                  <text x="530" y="125" text-anchor="middle" fill="#7a9abf" font-size="10">Service Desk · Run</text>
+                  <path d="M200 110 L230 110" stroke="#10b981" stroke-width="2" marker-end="url(#arrow)"/>
+                  <path d="M410 110 L440 110" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrow)"/>
+                  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#10b981"/></marker></defs>
+                  <text x="320" y="30" text-anchor="middle" fill="#10b981" font-size="11" font-weight="600">ALINEACIÓN ESTRATÉGICA · VALOR · RIESGO</text>
+                  <text x="320" y="195" text-anchor="middle" fill="#7a9abf" font-size="10">El gobierno define QUÉ y POR QUÉ; la gestión planifica CÓMO; la operación ejecuta y entrega servicios</text>
+                </svg>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.3);">🏦</div>
+              <div><div class="tema-nombre">Casos empresariales: BBVA y Walmart IT Governance</div><div class="tema-desc-short">Implementación real de gobierno de TI en sector financiero y retail</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">BBVA — Gobierno de TI en banca digital</div>
+              <p class="content-text">BBVA estructura su gobierno de TI con un <strong style="color:var(--text-primary)">Comité de Tecnología</strong> que reporta al consejo, alineando inversiones cloud, ciberseguridad y datos con la estrategia de banca digital. Utiliza marcos COBIT para evaluar madurez de procesos y ITIL para operación de servicios críticos (core bancario, pagos móviles). Métricas de valor incluyen time-to-market de productos digitales y reducción de incidentes en canales.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Walmart — Gobierno TI a escala global retail</div>
+              <p class="content-text">Walmart gobierna una de las infraestructuras de TI más grandes del mundo: supply chain, e-commerce, POS y analytics. Su modelo combina <strong style="color:var(--text-primary)">portfolio management</strong> centralizado con equipos ágiles por dominio de negocio. COBIT apoya auditoría y cumplimiento; ITIL estructura la operación de servicios compartidos (red, datacenter, aplicaciones). El gobierno prioriza disponibilidad en temporada alta (Black Friday) y resiliencia de la cadena de suministro digital.</p>
+            </div>
+            <div class="highlight-box blue"><div class="highlight-label" style="color:var(--accent-b)">📌 Lección clave</div><p>En ambos casos, el gobierno de TI no es burocracia: es el mecanismo que traduce la estrategia corporativa en prioridades tecnológicas medibles, con roles claros entre negocio y TI.</p></div>
+            <div class="video-section">
+              <div class="video-label-bar">📹 Video — Introducción al Gobierno de TI y COBIT</div>
+              <div class="video-frame"><iframe src="https://www.youtube.com/embed/0Q8ZT105rN0" title="COBIT 2019 Gobierno de TI" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+
+      <div class="bibliografia-block">
+        <div class="content-title">📚 Bibliografía — Semana 09</div>
+        <ul class="bib-list">
+          <li><em>ISACA.</em> (2019). <em>COBIT 2019 Framework: Introduction and Methodology.</em> ISACA.</li>
+          <li><em>ISO/IEC.</em> (2015). <em>ISO/IEC 38500:2015 — Governance of IT for the organization.</em> International Organization for Standardization.</li>
+          <li><em>Laudon, K. C., &amp; Laudon, J. P.</em> (2022). <em>Management Information Systems: Managing the Digital Firm</em> (17th ed.). Pearson. Cap. Gobierno y ética en SI.</li>
+          <li><em>De Haes, S., &amp; Van Grembergen, W.</em> (2015). <em>Enterprise Governance of Information Technology.</em> Springer.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SEMANA 10 -->
+    <section class="semana-section" id="semana10">
+      <div class="semana-header-main">
+        <div class="semana-num-big">10</div>
+        <div>
+          <div class="semana-week-tag">Semana 10 · IT Service Management</div>
+          <h2 class="semana-titulo">Gestión de Servicios de TI (ITIL 4)</h2>
+          <p class="semana-intro">Introducción a ITIL 4: estrategia, diseño de servicios, portafolio, catálogo y acuerdos de nivel de servicio (SLA) con casos reales de proveedores cloud.</p>
+        </div>
+      </div>
+      <div class="temas-container">
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);">🔄</div>
+              <div><div class="tema-nombre">ITIL 4: Service Value System y cadena de valor</div><div class="tema-desc-short">Fundamentos del marco ITIL 4 y enfoque orientado al valor</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">¿Qué es ITIL 4?</div>
+              <p class="content-text"><strong style="color:var(--text-primary)">ITIL (Information Technology Infrastructure Library)</strong> es el marco de mejores prácticas de Axelos para la gestión de servicios de TI. ITIL 4 (2019) introduce el <em>Service Value System (SVS)</em>: guía, gobernanza, prácticas, principios y mejora continua que transforman demandas en valor. La <em>Service Value Chain</em> incluye planificar, mejorar, involucrar, diseñar/transicionar, obtener/construir, entregar/soportar.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Principios guía de ITIL 4</div>
+              <div class="pilares-grid">
+                <div class="pilar-card"><div class="pilar-num">01</div><div class="pilar-title">Enfoque al valor</div><div class="pilar-text">Todo servicio debe generar valor para las partes interesadas.</div></div>
+                <div class="pilar-card"><div class="pilar-num">02</div><div class="pilar-title">Comenzar donde estás</div><div class="pilar-text">Aprovechar lo existente; no reinventar desde cero.</div></div>
+                <div class="pilar-card"><div class="pilar-num">03</div><div class="pilar-title">Progreso iterativo</div><div class="pilar-text">Mejora continua en ciclos cortos y medibles.</div></div>
+                <div class="pilar-card"><div class="pilar-num">04</div><div class="pilar-title">Colaborar</div><div class="pilar-text">Visibilidad y trabajo conjunto entre equipos.</div></div>
+                <div class="pilar-card"><div class="pilar-num">05</div><div class="pilar-title">Pensar holísticamente</div><div class="pilar-text">Ver el sistema completo, no solo componentes aislados.</div></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3);">📊</div>
+              <div><div class="tema-nombre">Estrategia, diseño, portafolio y catálogo de servicios</div><div class="tema-desc-short">De la planificación estratégica al catálogo visible para el usuario</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Service Strategy y Service Design</div>
+              <p class="content-text">La <strong style="color:var(--text-primary)">estrategia de servicios</strong> define qué servicios ofrecer, a quién, con qué diferenciación y modelo de costos. El <strong style="color:var(--text-primary)">diseño de servicios</strong> especifica arquitectura, procesos, métricas, seguridad y continuidad antes de construir o adquirir la solución.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Portafolio vs. Catálogo de servicios</div>
+              <div class="niveles-stack">
+                <div class="nivel-item" style="border-left-color:#10b981;"><div class="nivel-sigla" style="color:#10b981;font-size:0.85rem;min-width:90px;">Portafolio</div><div><div class="nivel-info-title">Service Portfolio Management</div><div class="nivel-info-text">Vista completa de todos los servicios: pipeline (futuros), catálogo (activos) y retirados. Herramienta de decisión estratégica para inversiones TI.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#3b82f6;"><div class="nivel-sigla" style="color:#3b82f6;font-size:0.85rem;min-width:90px;">Catálogo</div><div><div class="nivel-info-title">Service Catalog</div><div class="nivel-info-text">Lista de servicios disponibles para usuarios finales con descripción, tiempos, costos y canal de solicitud. Puede ser de negocio o técnico.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#f59e0b;"><div class="nivel-sigla" style="color:#f59e0b;font-size:0.85rem;min-width:90px;">SLA</div><div><div class="nivel-info-title">Service Level Agreement</div><div class="nivel-info-text">Acuerdo formal entre proveedor y cliente con métricas (disponibilidad, tiempo de respuesta), penalidades y revisiones periódicas.</div></div></div>
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Componentes típicos de un SLA</div>
+              <table class="compare-table">
+                <thead><tr><th>Elemento</th><th>Descripción</th><th>Ejemplo</th></tr></thead>
+                <tbody>
+                  <tr><td>Disponibilidad</td><td>% de tiempo operativo del servicio</td><td>99.9% mensual (≈43 min downtime)</td></tr>
+                  <tr><td>Tiempo de respuesta</td><td>Plazo para atender solicitud/incidente</td><td>P1: 15 min · P2: 1 h · P3: 8 h</td></tr>
+                  <tr><td>Tiempo de resolución</td><td>Plazo para restaurar servicio</td><td>Crítico: 4 h · Alto: 24 h</td></tr>
+                  <tr><td>Ventana de mantenimiento</td><td>Periodos planificados fuera de SLA</td><td>Domingos 02:00–06:00 UTC</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.3);">☁️</div>
+              <div><div class="tema-nombre">Casos reales: AWS SLA, Azure Service Health, IBM Cloud</div><div class="tema-desc-short">SLA y transparencia operativa en proveedores cloud líderes</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Amazon Web Services (AWS)</div>
+              <p class="content-text">AWS publica SLAs por servicio (EC2, S3, RDS). Por ejemplo, <strong style="color:var(--text-primary)">Amazon EC2</strong> ofrece 99.99% de disponibilidad mensual en configuraciones multi-AZ; incumplimientos generan créditos de servicio según tablas publicadas. El modelo multi-tenant exige que el cliente diseñe arquitecturas resilientes (regiones, AZs) además del SLA del proveedor.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Microsoft Azure Service Health</div>
+              <p class="content-text">Azure combina SLAs por servicio con <strong style="color:var(--text-primary)">Azure Service Health</strong>: portal que notifica incidentes, mantenimiento planificado e impacto por región/suscripción. Permite integración con Logic Apps, webhooks y Teams para alertas proactivas al equipo de operaciones.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">IBM Cloud</div>
+              <p class="content-text">IBM Cloud documenta SLAs por categoría (compute, storage, networking) y ofrece <strong style="color:var(--text-primary)">Status IBM Cloud</strong> en tiempo real. Enfoque enterprise con acuerdos personalizados para clientes regulados (finanzas, salud) que requieren SLAs más estrictos y soporte dedicado.</p>
+            </div>
+            <div class="highlight-box gold"><div class="highlight-label" style="color:var(--gold)">💡 Buena práctica</div><p>En entornos híbridos/multi-cloud, la organización debe mapear SLAs internos (ITIL) con SLAs de proveedores externos y definir responsabilidades compartidas para evitar gaps en tiempos de respuesta.</p></div>
+            <div class="video-section">
+              <div class="video-label-bar">📹 Video — ITIL 4 Service Value System</div>
+              <div class="video-frame"><iframe src="https://www.youtube.com/embed/Oa0ZHfcalCM" title="ITIL 4 Fundamentals" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+
+      <div class="bibliografia-block">
+        <div class="content-title">📚 Bibliografía — Semana 10</div>
+        <ul class="bib-list">
+          <li><em>Axelos.</em> (2019). <em>ITIL Foundation: ITIL 4 Edition.</em> TSO (The Stationery Office).</li>
+          <li><em>Amazon Web Services.</em> (2024). <em>AWS Service Level Agreements.</em> docs.aws.amazon.com</li>
+          <li><em>Microsoft.</em> (2024). <em>Azure SLA documentation &amp; Service Health.</em> learn.microsoft.com</li>
+          <li><em>Laudon, K. C., &amp; Laudon, J. P.</em> (2022). <em>Management Information Systems</em>. Pearson. Cap. Gestión de servicios y cloud computing.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SEMANA 11 -->
+    <section class="semana-section" id="semana11">
+      <div class="semana-header-main">
+        <div class="semana-num-big">11</div>
+        <div>
+          <div class="semana-week-tag">Semana 11 · Diseño y Transición</div>
+          <h2 class="semana-titulo">Diseño y Transición de Servicios de TI</h2>
+          <p class="semana-intro">Procesos para diseñar servicios robustos y llevarlos a producción de forma controlada: gestión de activos, configuración, releases, validación y pruebas.</p>
+        </div>
+      </div>
+      <div class="temas-container">
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);">🎨</div>
+              <div><div class="tema-nombre">Service Design y Service Transition</div><div class="tema-desc-short">Diseño integral del servicio y transición controlada a operación</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Service Design (Diseño de servicios)</div>
+              <p class="content-text">El diseño de servicios en ITIL abarca <strong style="color:var(--text-primary)">procesos, tecnología, información, métricas y experiencia del usuario</strong>. Entregables clave: Service Design Package (SDP), plan de continuidad, plan de capacidad, modelo de seguridad y definición de roles (RACI).</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Service Transition (Transición de servicios)</div>
+              <p class="content-text">La transición asegura que los cambios lleguen a producción sin degradar servicios existentes. Incluye evaluación de riesgo, pruebas, formación, despliegue y revisión post-implementación (PIR). Objetivo: <em>minimizar riesgo y sorpresas en operación</em>.</p>
+            </div>
+            <div class="mini-cards">
+              <div class="mini-card"><div class="mini-card-label" style="color:var(--accent)">Change</div><div class="mini-card-title">Evaluación</div><div class="mini-card-text">CAB (Change Advisory Board) revisa impacto y ventana de cambio.</div></div>
+              <div class="mini-card"><div class="mini-card-label" style="color:var(--accent-b)">Build</div><div class="mini-card-title">Construcción</div><div class="mini-card-text">Desarrollo, empaquetado y pruebas en entornos no productivos.</div></div>
+              <div class="mini-card"><div class="mini-card-label" style="color:var(--gold)">Deploy</div><div class="mini-card-title">Despliegue</div><div class="mini-card-text">Release planificado con rollback documentado.</div></div>
+              <div class="mini-card"><div class="mini-card-label" style="color:var(--accent3)">Review</div><div class="mini-card-title">PIR</div><div class="mini-card-text">Post-Implementation Review: lecciones aprendidas y métricas.</div></div>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3);">🗄️</div>
+              <div><div class="tema-nombre">Asset, Configuration y Release Management</div><div class="tema-desc-short">CMDB, CI y control de versiones en producción</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">IT Asset Management (ITAM)</div>
+              <p class="content-text">Gestiona el ciclo de vida de activos de TI (hardware, software, licencias) desde adquisición hasta disposición. Objetivos: optimizar costos, cumplir licencias y reducir riesgo legal.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Configuration Management (CMDB)</div>
+              <p class="content-text">La <strong style="color:var(--text-primary)">CMDB (Configuration Management Database)</strong> registra Configuration Items (CI): servidores, aplicaciones, redes, con relaciones y atributos. Es la base para impact analysis en cambios e incidentes. Herramientas: ServiceNow, BMC Helix, Jira Service Management.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Release Management</div>
+              <p class="content-text">Agrupa cambios relacionados en un <em>release</em> versionado (v2.3.0), con calendario, pruebas de aceptación (UAT) y comunicación a usuarios. En DevOps se integra con CI/CD pipelines automatizados.</p>
+            </div>
+            <table class="compare-table">
+              <thead><tr><th>Práctica</th><th>Pregunta clave</th><th>Registro principal</th></tr></thead>
+              <tbody>
+                <tr><td>ITAM</td><td>¿Qué poseemos y cuánto cuesta?</td><td>Inventario de activos, contratos</td></tr>
+                <tr><td>Configuration Mgmt</td><td>¿Cómo se relacionan los componentes?</td><td>CMDB, mapas de dependencia</td></tr>
+                <tr><td>Release Mgmt</td><td>¿Qué versión va a producción y cuándo?</td><td>Release notes, pipeline CI/CD</td></tr>
+              </tbody>
+            </table>
+          </div></div>
+        </div>
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.3);">✅</div>
+              <div><div class="tema-nombre">Validación, pruebas y flujo de transición</div><div class="tema-desc-short">Testing, aceptación y diagrama del ciclo completo</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Validation &amp; Testing</div>
+              <p class="content-text">ITIL 4 incluye la práctica de <strong style="color:var(--text-primary)">Validation and Testing</strong>: pruebas unitarias, integración, rendimiento, seguridad y UAT. Criterios de salida (exit criteria) deben definirse antes del despliegue: cobertura mínima, cero defectos críticos, aprobación del product owner.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Diagrama: flujo completo de Service Transition</div>
+              <div class="diagram-wrap">
+                <svg viewBox="0 0 700 320" width="700" height="320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flujo de transición de servicios ITIL">
+                  <defs><marker id="arr2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#10b981"/></marker></defs>
+                  <rect x="20" y="120" width="100" height="50" rx="8" fill="rgba(16,185,129,0.15)" stroke="#10b981"/><text x="70" y="150" text-anchor="middle" fill="#f0f6ff" font-size="10">Request</text>
+                  <rect x="140" y="120" width="100" height="50" rx="8" fill="rgba(59,130,246,0.15)" stroke="#3b82f6"/><text x="190" y="145" text-anchor="middle" fill="#f0f6ff" font-size="10">Evaluate</text><text x="190" y="158" text-anchor="middle" fill="#7a9abf" font-size="8">CAB / Risk</text>
+                  <rect x="260" y="120" width="100" height="50" rx="8" fill="rgba(245,158,11,0.15)" stroke="#f59e0b"/><text x="310" y="145" text-anchor="middle" fill="#f0f6ff" font-size="10">Build</text><text x="310" y="158" text-anchor="middle" fill="#7a9abf" font-size="8">Dev / CI</text>
+                  <rect x="380" y="120" width="100" height="50" rx="8" fill="rgba(232,121,249,0.15)" stroke="#e879f9"/><text x="430" y="145" text-anchor="middle" fill="#f0f6ff" font-size="10">Test</text><text x="430" y="158" text-anchor="middle" fill="#7a9abf" font-size="8">UAT / QA</text>
+                  <rect x="500" y="120" width="100" height="50" rx="8" fill="rgba(16,185,129,0.15)" stroke="#10b981"/><text x="550" y="145" text-anchor="middle" fill="#f0f6ff" font-size="10">Deploy</text><text x="550" y="158" text-anchor="middle" fill="#7a9abf" font-size="8">Release</text>
+                  <rect x="620" y="120" width="60" height="50" rx="8" fill="rgba(59,130,246,0.15)" stroke="#3b82f6"/><text x="650" y="150" text-anchor="middle" fill="#f0f6ff" font-size="10">Ops</text>
+                  <path d="M120 145 L140 145" stroke="#10b981" stroke-width="2" marker-end="url(#arr2)"/>
+                  <path d="M240 145 L260 145" stroke="#10b981" stroke-width="2" marker-end="url(#arr2)"/>
+                  <path d="M360 145 L380 145" stroke="#10b981" stroke-width="2" marker-end="url(#arr2)"/>
+                  <path d="M480 145 L500 145" stroke="#10b981" stroke-width="2" marker-end="url(#arr2)"/>
+                  <path d="M600 145 L620 145" stroke="#10b981" stroke-width="2" marker-end="url(#arr2)"/>
+                  <rect x="260" y="30" width="220" height="45" rx="8" fill="rgba(16,185,129,0.08)" stroke="rgba(16,185,129,0.4)" stroke-dasharray="4"/>
+                  <text x="370" y="58" text-anchor="middle" fill="#10b981" font-size="11" font-weight="600">CMDB · Actualización de CI</text>
+                  <path d="M430 120 L430 75" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3"/>
+                  <rect x="260" y="240" width="220" height="45" rx="8" fill="rgba(245,158,11,0.08)" stroke="rgba(245,158,11,0.4)" stroke-dasharray="4"/>
+                  <text x="370" y="268" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="600">PIR · Knowledge Base</text>
+                  <path d="M550 170 L550 240 L480 262" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3" fill="none"/>
+                  <text x="350" y="310" text-anchor="middle" fill="#7a9abf" font-size="10">Transición controlada: cada etapa valida criterios antes de avanzar a producción</text>
+                </svg>
+              </div>
+            </div>
+            <div class="highlight-box"><div class="highlight-label" style="color:var(--accent)">📌 Caso práctico</div><p>Una empresa retail migra su ERP a SAP S/4HANA Cloud: Service Design define arquitectura híbrida; Transition ejecuta pruebas de carga en Black Friday simulado, actualiza CMDB con nuevos CIs cloud, y realiza PIR documentando incidentes de cutover para mejorar el próximo release.</p></div>
+            <div class="video-section">
+              <div class="video-label-bar">📹 Video — Service Transition ITIL</div>
+              <div class="video-frame"><iframe src="https://www.youtube.com/embed/8z0VLL0wRrM" title="ITIL Service Transition" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+
+      <div class="bibliografia-block">
+        <div class="content-title">📚 Bibliografía — Semana 11</div>
+        <ul class="bib-list">
+          <li><em>Axelos.</em> (2019). <em>ITIL 4: Create, Deliver and Support.</em> TSO.</li>
+          <li><em>Axelos.</em> (2019). <em>ITIL 4: Drive Stakeholder Value.</em> TSO.</li>
+          <li><em>ISO/IEC.</em> (2015). <em>ISO/IEC 20000-1:2018 — Service management system requirements.</em> ISO.</li>
+          <li><em>Laudon, K. C., &amp; Laudon, J. P.</em> (2022). <em>Management Information Systems.</em> Pearson. Cap. Desarrollo y adquisición de sistemas.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SEMANA 12 -->
+    <section class="semana-section" id="semana12">
+      <div class="semana-header-main">
+        <div class="semana-num-big">12</div>
+        <div>
+          <div class="semana-week-tag">Semana 12 · Operaciones y Soporte</div>
+          <h2 class="semana-titulo">Gestión Operativa de Servicios de TI</h2>
+          <p class="semana-intro">Prácticas ITIL de operación diaria: cambios, conocimiento, eventos, incidentes, problemas y Service Desk. Matriz comparativa y caso real de soporte técnico empresarial.</p>
+        </div>
+      </div>
+      <div class="temas-container">
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);">🎧</div>
+              <div><div class="tema-nombre">Service Desk y flujo ITIL de operaciones</div><div class="tema-desc-short">Punto único de contacto y cadena de soporte multinivel</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Service Desk (ITIL 4)</div>
+              <p class="content-text">El <strong style="color:var(--text-primary)">Service Desk</strong> es la práctica que captura demanda e incidentes, proporciona canal único de contacto (teléfono, portal, chat, email) y coordina resolución. Modelos comunes: local, centralizado, virtual (follow-the-sun) y con IA (chatbots de primer nivel).</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Niveles de soporte</div>
+              <div class="niveles-stack">
+                <div class="nivel-item" style="border-left-color:#10b981;"><div class="nivel-sigla" style="color:#10b981;">L1</div><div><div class="nivel-info-title">Primer nivel — Service Desk</div><div class="nivel-info-text">Recepción, clasificación, solución de incidentes conocidos (base de conocimiento), escalamiento si no resuelve.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#3b82f6;"><div class="nivel-sigla" style="color:#3b82f6;">L2</div><div><div class="nivel-info-title">Segundo nivel — Especialistas</div><div class="nivel-info-text">Administradores de sistemas, redes o aplicaciones con diagnóstico técnico profundo.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#f59e0b;"><div class="nivel-sigla" style="color:#f59e0b;">L3</div><div><div class="nivel-info-title">Tercer nivel — Proveedor / Desarrollo</div><div class="nivel-info-text">Vendor support o equipo de desarrollo para bugs, parches y cambios estructurales.</div></div></div>
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Diagrama: flujo ITIL Incident → Problem → Change</div>
+              <div class="diagram-wrap">
+                <svg viewBox="0 0 620 200" width="620" height="200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flujo ITIL incident problem change">
+                  <ellipse cx="100" cy="80" rx="70" ry="35" fill="rgba(248,113,113,0.15)" stroke="#f87171"/><text x="100" y="85" text-anchor="middle" fill="#f0f6ff" font-size="11">Evento</text>
+                  <rect x="200" y="55" width="90" height="50" rx="8" fill="rgba(245,158,11,0.15)" stroke="#f59e0b"/><text x="245" y="85" text-anchor="middle" fill="#f0f6ff" font-size="11">Incidente</text>
+                  <rect x="330" y="55" width="90" height="50" rx="8" fill="rgba(59,130,246,0.15)" stroke="#3b82f6"/><text x="375" y="85" text-anchor="middle" fill="#f0f6ff" font-size="11">Problema</text>
+                  <rect x="460" y="55" width="90" height="50" rx="8" fill="rgba(16,185,129,0.15)" stroke="#10b981"/><text x="505" y="85" text-anchor="middle" fill="#f0f6ff" font-size="11">Cambio</text>
+                  <path d="M170 80 L200 80" stroke="#7a9abf" stroke-width="2" marker-end="url(#arr3)"/>
+                  <path d="M290 80 L330 80" stroke="#7a9abf" stroke-width="2" marker-end="url(#arr3)"/>
+                  <path d="M420 80 L460 80" stroke="#7a9abf" stroke-width="2" marker-end="url(#arr3)"/>
+                  <defs><marker id="arr3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="#7a9abf"/></marker></defs>
+                  <rect x="200" y="130" width="350" height="40" rx="8" fill="rgba(16,185,129,0.08)" stroke="rgba(16,185,129,0.35)"/><text x="375" y="155" text-anchor="middle" fill="#10b981" font-size="10">Knowledge Management — artículos, workarounds, RCA</text>
+                  <path d="M245 105 L245 130" stroke="#10b981" stroke-width="1" stroke-dasharray="3"/>
+                  <path d="M375 105 L375 130" stroke="#10b981" stroke-width="1" stroke-dasharray="3"/>
+                </svg>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(248,113,113,0.1);border-color:rgba(248,113,113,0.3);">🚨</div>
+              <div><div class="tema-nombre">Incident, Problem, Change y Knowledge Management</div><div class="tema-desc-short">Prácticas operativas esenciales de ITIL 4</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Definiciones clave</div>
+              <div class="mini-cards">
+                <div class="mini-card"><div class="mini-card-label" style="color:#f87171">Incident</div><div class="mini-card-title">Incidente</div><div class="mini-card-text">Interrupción no planificada o reducción de calidad de un servicio. Objetivo: restaurar servicio rápido.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent-b)">Problem</div><div class="mini-card-title">Problema</div><div class="mini-card-text">Causa raíz de uno o más incidentes. Objetivo: eliminar la causa (RCA, errores conocidos).</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent)">Change</div><div class="mini-card-title">Cambio</div><div class="mini-card-text">Adición, modificación o eliminación controlada de CIs. Estándar, normal o emergencia.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--gold)">Knowledge</div><div class="mini-card-title">Conocimiento</div><div class="mini-card-text">Artículos reutilizables, FAQs y documentación que aceleran resolución en L1.</div></div>
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Matriz comparativa: Incidente vs. Problema vs. Cambio</div>
+              <table class="compare-table">
+                <thead><tr><th>Dimensión</th><th>Incident Management</th><th>Problem Management</th><th>Change Enablement</th></tr></thead>
+                <tbody>
+                  <tr><td>Objetivo</td><td>Restaurar servicio ASAP</td><td>Identificar y eliminar causa raíz</td><td>Implementar modificación controlada</td></tr>
+                  <tr><td>Enfoque temporal</td><td>Inmediato (horas)</td><td>Medio plazo (días/semanas)</td><td>Planificado (según tipo)</td></tr>
+                  <tr><td>Trigger típico</td><td>Usuario reporta caída</td><td>Incidentes recurrentes</td><td>Mejora, parche, proyecto</td></tr>
+                  <tr><td>Entregable</td><td>Ticket cerrado, SLA cumplido</td><td>Known Error, RCA document</td><td>RFC aprobado, release desplegado</td></tr>
+                  <tr><td>Equipo principal</td><td>Service Desk + L2</td><td>Problem Manager + SMEs</td><td>Change Manager + CAB</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Event Management</div>
+              <p class="content-text">Los <strong style="color:var(--text-primary)">eventos</strong> son cambios de estado detectados por monitorización (CPU alta, disco lleno, heartbeat perdido). Eventos informativos se registran; alertas pueden generar incidentes automáticos vía herramientas como Datadog, PagerDuty, Azure Monitor o Zabbix.</p>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.3);">💼</div>
+              <div><div class="tema-nombre">Caso real: soporte TI empresarial</div><div class="tema-desc-short">Escenario completo de incidente crítico en organización mediana</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Escenario: caída del portal de clientes</div>
+              <p class="content-text"><strong style="color:var(--text-primary)">08:15</strong> — Azure Monitor genera evento: HTTP 503 en App Service de producción. <strong style="color:var(--text-primary)">08:17</strong> — Service Desk recibe 12 llamadas; se abre incidente P1 (SLA respuesta 15 min). L1 verifica portal caído, escala a L2 aplicaciones.</p>
+              <p class="content-text" style="margin-top:10px;"><strong style="color:var(--text-primary)">08:35</strong> — L2 identifica fallo en conexión a SQL tras cambio nocturno de firewall. Workaround: revertir regla. Servicio restaurado 08:50. <strong style="color:var(--text-primary)">09:30</strong> — Problem Management abre investigación RCA: cambio no pasó por CAB. Se crea Known Error y artículo en Knowledge Base.</p>
+              <p class="content-text" style="margin-top:10px;"><strong style="color:var(--text-primary)">Semana siguiente</strong> — Change Enablement implementa RFC para proceso de cambios en firewall con aprobación obligatoria y pruebas automatizadas en staging. Métricas: MTTR reducido de 95 min a 35 min en incidentes similares.</p>
+            </div>
+            <div class="highlight-box red"><div class="highlight-label" style="color:#f87171">⚠️ Anti-patrón detectado</div><p>Cambio de infraestructura sin RFC ni pruebas → incidente P1 evitable. Lección ITIL: toda modificación de CI en producción debe seguir el proceso de Change Enablement, incluso cambios "pequeños".</p></div>
+            <div class="video-section">
+              <div class="video-label-bar">📹 Video — ITIL Incident Management</div>
+              <div class="video-frame"><iframe src="https://www.youtube.com/embed/lLwfh4MFr8Y" title="ITIL Incident Management" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+
+      <div class="bibliografia-block">
+        <div class="content-title">📚 Bibliografía — Semana 12</div>
+        <ul class="bib-list">
+          <li><em>Axelos.</em> (2019). <em>ITIL 4: High-velocity IT.</em> TSO.</li>
+          <li><em>Axelos.</em> (2019). <em>ITIL 4: Direct, Plan and Improve.</em> TSO.</li>
+          <li><em>Laudon, K. C., &amp; Laudon, J. P.</em> (2022). <em>Management Information Systems.</em> Pearson. Cap. Seguridad, continuidad y gestión de TI.</li>
+          <li><em>ISO/IEC.</em> (2018). <em>ISO/IEC 20000-1:2018 — IT service management.</em> ISO.</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="unit-nav-bottom">
+      <a href="unidad2.html" class="nav-prev">← Unidad anterior</a>
+      <a href="unidad4.html" class="nav-next">Siguiente unidad →</a>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  const cursor=document.querySelector('.cursor'),follower=document.querySelector('.cursor-follower');
+  let mX=0,mY=0,fX=0,fY=0,rafId=null;
+  document.addEventListener('mousemove',e=>{
+    mX=e.clientX;mY=e.clientY;
+    cursor.style.left=mX+'px';cursor.style.top=mY+'px';
+    if(!rafId)animF();
+  });
+  function animF(){
+    fX+=(mX-fX)*0.12;fY+=(mY-fY)*0.12;
+    follower.style.left=fX+'px';follower.style.top=fY+'px';
+    if(Math.hypot(mX-fX,mY-fY)>0.5)rafId=requestAnimationFrame(animF);else rafId=null;
+  }
+  document.addEventListener('mouseover',e=>{if(e.target.matches('a,button')){cursor.style.transform='translate(-50%,-50%) scale(2)';cursor.style.background='#3b82f6';}});
+  document.addEventListener('mouseout',e=>{if(e.target.matches('a,button')){cursor.style.transform='translate(-50%,-50%) scale(1)';cursor.style.background='#10b981';}});
+  document.addEventListener('mousedown',()=>cursor.style.transform='translate(-50%,-50%) scale(0.7)');
+  document.addEventListener('mouseup',()=>cursor.style.transform='translate(-50%,-50%) scale(1)');
+
+  document.querySelectorAll('.tema-trigger').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const ac=btn.closest('.tema-acordeon');
+      const wasOpen=ac.classList.contains('open');
+      document.querySelectorAll('.tema-acordeon.open').forEach(a=>{a.classList.remove('open');a.querySelector('.tema-trigger').setAttribute('aria-expanded','false');});
+      if(!wasOpen){ac.classList.add('open');btn.setAttribute('aria-expanded','true');}
+    });
+  });
+
+  const semanas=document.querySelectorAll('.semana-section');
+  const links=document.querySelectorAll('.semana-link');
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        links.forEach(l=>{l.style.color='';l.style.background='';l.style.borderColor='transparent';});
+        const a=document.querySelector(`.semana-link[href="#${e.target.id}"]`);
+        if(a){a.style.color='var(--accent)';a.style.background='rgba(16,185,129,0.07)';a.style.borderColor='rgba(16,185,129,0.2)';}
+      }
+    });
+  },{threshold:0.35});
+  semanas.forEach(s=>io.observe(s));
+</script>
+</body>
+</html>

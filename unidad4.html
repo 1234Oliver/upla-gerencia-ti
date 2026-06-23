@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Unidad IV — Desarrollo de Sistemas de Información en la Empresa. SDLC, metodologías ágiles, implementación ERP, proyecto integrador y evaluación final. Curso Gerencia TI UPLA." />
+  <meta name="keywords" content="SDLC, ciclo de vida sistemas, Scrum, DevOps, implementación ERP, SAP, Dynamics 365, cambio organizacional, Gerencia TI, UPLA, sistemas de información" />
+  <meta name="author" content="Universidad Peruana Los Andes — Gerencia de Sistemas de Información" />
+  <meta property="og:title" content="Unidad 04 — Desarrollo de Sistemas de Información en la Empresa" />
+  <meta property="og:description" content="Semanas 13-16: SDLC, implementación de ERP, proyecto integrador Distribuidora Andina S.A. y evaluación final del curso." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="es_PE" />
+  <title>Unidad 04 — Desarrollo de Sistemas de Información · Academia Digital</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep:#050a14;--bg-dark:#090f1e;--bg-card:#0d1629;--bg-card-hover:#111e38;
+      --accent:#f59e0b;--accent-glow:rgba(245,158,11,0.3);
+      --accent-b:#3b82f6;--accent3:#10b981;--gold:#f59e0b;--rose:#f43f5e;
+      --text-primary:#f0f6ff;--text-muted:#7a9abf;
+      --border:rgba(245,158,11,0.15);--border-hover:rgba(245,158,11,0.4);
+      --font-display:'Playfair Display',Georgia,serif;--font-body:'DM Sans',system-ui,sans-serif;
+      --radius:16px;--transition:cubic-bezier(0.4,0,0.2,1);
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;overflow-x:hidden;}
+    body{font-family:var(--font-body);background:var(--bg-deep);color:var(--text-primary);cursor:none;overflow-x:hidden;}
+
+    .cursor{position:fixed;width:8px;height:8px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s,background 0.2s;}
+    .cursor-follower{position:fixed;width:32px;height:32px;border:1.5px solid rgba(245,158,11,0.45);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left 0.12s,top 0.12s,width 0.3s,height 0.3s,border-color 0.3s;}
+
+    .cat-header{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:rgba(5,10,20,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+    .back-btn{background:transparent;border:1px solid rgba(245,158,11,0.2);color:var(--text-muted);padding:8px 20px;border-radius:100px;font-family:var(--font-body);font-size:0.85rem;cursor:none;transition:all 0.3s;text-decoration:none;display:inline-block;}
+    .back-btn:hover{border-color:var(--border-hover);color:var(--text-primary);background:rgba(245,158,11,0.07);}
+    .logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--text-primary);text-decoration:none;}
+    .logo-icon{font-size:1.5rem;color:var(--accent-b);animation:spin 12s linear infinite;display:inline-block;}
+    @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+    .cat-progress{font-size:0.8rem;color:var(--text-muted);letter-spacing:0.06em;}
+
+    .cat-layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 65px);}
+
+    .sidebar{background:var(--bg-dark);border-right:1px solid var(--border);padding:40px 24px;position:sticky;top:65px;height:calc(100vh - 65px);overflow-y:auto;}
+    .sidebar-title{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:20px;padding-left:4px;}
+    .unit-nav{display:flex;flex-direction:column;gap:8px;}
+    .unit-btn{display:flex;align-items:center;gap:16px;padding:14px 16px;background:transparent;border:1px solid transparent;border-radius:12px;color:var(--text-muted);font-family:var(--font-body);cursor:none;transition:all 0.3s;text-align:left;width:100%;text-decoration:none;}
+    .unit-btn:hover{background:var(--bg-card);border-color:rgba(245,158,11,0.2);color:var(--text-primary);}
+    .unit-btn.active{background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.38);color:var(--accent);}
+    .unit-btn-num{font-family:var(--font-display);font-size:0.75rem;font-weight:700;min-width:28px;}
+    .unit-btn-label{font-size:0.9rem;font-weight:500;}
+    .sidebar-semanas{margin-top:32px;padding-top:24px;border-top:1px solid var(--border);}
+    .sidebar-semanas-title{font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;padding-left:4px;}
+    .semana-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:var(--text-muted);font-size:0.82rem;text-decoration:none;transition:all 0.25s;border:1px solid transparent;}
+    .semana-link:hover{background:var(--bg-card);color:var(--text-primary);border-color:var(--border);}
+    .semana-link-num{font-family:var(--font-display);font-size:0.7rem;font-weight:700;color:var(--accent);min-width:26px;}
+
+    .cat-main{overflow-x:hidden;}
+    .unidad-hero{padding:60px 60px 48px;background:linear-gradient(135deg,#0a0a1e,var(--bg-deep));border-bottom:1px solid var(--border);position:relative;overflow:hidden;animation:fadeUp 0.6s both;}
+    .unidad-hero::before{content:'';position:absolute;top:-80px;right:-80px;width:420px;height:420px;background:radial-gradient(circle,rgba(245,158,11,0.07),transparent 70%);border-radius:50%;}
+    .unidad-hero::after{content:'';position:absolute;bottom:-60px;left:25%;width:260px;height:260px;background:radial-gradient(circle,rgba(59,130,246,0.04),transparent 70%);border-radius:50%;}
+    .unidad-tag{display:inline-block;font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;font-weight:600;}
+    .unidad-titulo{font-family:var(--font-display);font-size:clamp(2rem,4vw,3.2rem);font-weight:800;line-height:1.15;margin-bottom:16px;}
+    .unidad-subtitulo{color:var(--text-muted);font-size:1.05rem;line-height:1.7;max-width:640px;margin-bottom:32px;}
+    .unidad-meta{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px;}
+    .unidad-meta span{font-size:0.82rem;color:var(--text-muted);background:rgba(255,255,255,0.04);padding:6px 16px;border-radius:100px;border:1px solid var(--border);}
+
+    .resumen-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;position:relative;z-index:1;}
+    .resumen-item{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;}
+    .resumen-label{font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:6px;}
+    .resumen-item p{font-size:0.82rem;color:var(--text-muted);line-height:1.5;}
+
+    .examen-badge{margin:0 60px 0;padding:20px 28px;background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.3);border-radius:14px;display:flex;align-items:center;gap:16px;}
+    .examen-icon{font-size:1.6rem;flex-shrink:0;}
+    .examen-title{font-family:var(--font-display);font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:3px;}
+    .examen-text{font-size:0.83rem;color:var(--text-muted);line-height:1.5;}
+
+    .semana-section{border-bottom:1px solid var(--border);}
+    .semana-header-main{display:flex;align-items:flex-start;gap:20px;padding:36px 60px 28px;}
+    .semana-num-big{font-family:var(--font-display);font-size:4rem;font-weight:900;color:rgba(245,158,11,0.1);line-height:1;flex-shrink:0;}
+    .semana-week-tag{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;}
+    .semana-titulo{font-family:var(--font-display);font-size:1.5rem;font-weight:700;margin-bottom:6px;}
+    .semana-intro{color:var(--text-muted);font-size:0.9rem;line-height:1.6;max-width:600px;}
+
+    .temas-container{padding:0 60px 40px;}
+    .tema-acordeon{border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:10px;transition:border-color 0.3s;}
+    .tema-acordeon:hover{border-color:var(--border-hover);}
+    .tema-acordeon.open{border-color:rgba(245,158,11,0.4);}
+    .tema-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px 22px;background:var(--bg-card);border:none;color:var(--text-primary);font-family:var(--font-body);font-size:0.95rem;font-weight:500;cursor:none;transition:background 0.25s;text-align:left;gap:12px;}
+    .tema-trigger:hover{background:var(--bg-card-hover);}
+    .tema-acordeon.open .tema-trigger{background:rgba(245,158,11,0.07);}
+    .tema-trigger-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0;}
+    .tema-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;border:1px solid var(--border);}
+    .tema-nombre{font-weight:600;font-size:0.93rem;}
+    .tema-desc-short{font-size:0.76rem;color:var(--text-muted);margin-top:1px;}
+    .tema-chevron{color:var(--text-muted);font-size:0.7rem;transition:transform 0.35s var(--transition);flex-shrink:0;}
+    .tema-acordeon.open .tema-chevron{transform:rotate(180deg);color:var(--accent);}
+    .tema-body{max-height:0;overflow:hidden;transition:max-height 0.55s var(--transition);}
+    .tema-acordeon.open .tema-body{max-height:8000px;}
+    .tema-content{padding:26px 22px 28px;background:rgba(9,15,30,0.7);border-top:1px solid var(--border);}
+
+    .content-section{margin-bottom:22px;}
+    .content-section:last-child{margin-bottom:0;}
+    .content-title{font-family:var(--font-display);font-size:1rem;font-weight:700;margin-bottom:10px;color:var(--text-primary);}
+    .content-text{color:var(--text-muted);font-size:0.87rem;line-height:1.75;}
+
+    .mini-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;margin-top:12px;}
+    .mini-card{background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:14px 16px;transition:border-color 0.25s,transform 0.25s;}
+    .mini-card:hover{border-color:var(--border-hover);transform:translateY(-3px);}
+    .mini-card-label{font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:5px;}
+    .mini-card-title{font-size:0.86rem;font-weight:600;margin-bottom:4px;}
+    .mini-card-text{font-size:0.77rem;color:var(--text-muted);line-height:1.5;}
+
+    .niveles-stack{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+    .nivel-item{display:flex;align-items:flex-start;gap:14px;background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:14px 16px;border-left:3px solid;}
+    .nivel-sigla{font-family:var(--font-display);font-size:1.1rem;font-weight:900;min-width:52px;flex-shrink:0;}
+    .nivel-info-title{font-size:0.87rem;font-weight:600;margin-bottom:2px;}
+    .nivel-info-text{font-size:0.77rem;color:var(--text-muted);line-height:1.5;}
+
+    .pilares-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:12px;}
+    .pilar-card{background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;transition:all 0.3s;}
+    .pilar-card:hover{border-color:var(--border-hover);background:var(--bg-card);}
+    .pilar-num{font-family:var(--font-display);font-size:1.6rem;font-weight:900;color:rgba(245,158,11,0.18);margin-bottom:6px;}
+    .pilar-title{font-size:0.84rem;font-weight:700;margin-bottom:4px;}
+    .pilar-text{font-size:0.75rem;color:var(--text-muted);line-height:1.5;}
+
+    .highlight-box{background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:16px 18px;margin-top:14px;}
+    .highlight-box.blue{background:rgba(59,130,246,0.06);border-color:rgba(59,130,246,0.22);}
+    .highlight-box.green{background:rgba(16,185,129,0.06);border-color:rgba(16,185,129,0.22);}
+    .highlight-box.red{background:rgba(248,113,113,0.07);border-color:rgba(248,113,113,0.22);}
+    .highlight-label{font-size:0.63rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;margin-bottom:6px;}
+    .highlight-box p{font-size:0.83rem;color:var(--text-muted);line-height:1.6;}
+
+    .compare-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:0.81rem;}
+    .compare-table th{text-align:left;padding:10px 14px;background:rgba(245,158,11,0.07);color:var(--accent);font-weight:600;letter-spacing:0.04em;border-bottom:1px solid var(--border);}
+    .compare-table td{padding:10px 14px;border-bottom:1px solid rgba(245,158,11,0.06);color:var(--text-muted);vertical-align:top;line-height:1.5;}
+    .compare-table tr:last-child td{border-bottom:none;}
+    .compare-table tr:hover td{background:rgba(245,158,11,0.03);}
+    .compare-table td:first-child{color:var(--text-primary);font-weight:500;}
+
+    .video-section{margin-top:20px;}
+    .video-label-bar{font-size:0.72rem;color:var(--text-muted);padding:8px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px 10px 0 0;letter-spacing:0.04em;}
+    .video-frame{border-radius:0 0 10px 10px;overflow:hidden;background:#000;}
+    .video-frame iframe{width:100%;height:210px;border:none;display:block;}
+
+    .unit-nav-bottom{display:flex;justify-content:space-between;align-items:center;padding:28px 60px 60px;}
+    .nav-prev,.nav-next{padding:12px 28px;border-radius:100px;font-family:var(--font-body);font-size:0.9rem;font-weight:500;cursor:none;transition:all 0.3s;text-decoration:none;display:inline-block;}
+    .nav-prev{background:transparent;border:1px solid var(--border);color:var(--text-muted);}
+    .nav-prev:hover{border-color:var(--border-hover);color:var(--text-primary);}
+    .nav-next{background:var(--accent);border:1px solid var(--accent);color:#fff;}
+    .nav-next:hover{filter:brightness(1.1);box-shadow:0 8px 24px var(--accent-glow);transform:translateY(-2px);}
+
+    .biblio-section{margin-top:28px;padding:20px 22px;background:rgba(245,158,11,0.03);border:1px solid rgba(245,158,11,0.15);border-radius:12px;}
+    .biblio-title{font-family:var(--font-display);font-size:0.9rem;font-weight:700;margin-bottom:12px;color:var(--accent);}
+    .biblio-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+    .biblio-list li{font-size:0.8rem;color:var(--text-muted);line-height:1.55;padding-left:16px;position:relative;}
+    .biblio-list li::before{content:'•';position:absolute;left:0;color:var(--accent);}
+
+    .kpi-dashboard{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-top:14px;}
+    .kpi-card{background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:18px 16px;text-align:center;transition:all 0.3s;}
+    .kpi-card:hover{border-color:var(--border-hover);transform:translateY(-3px);}
+    .kpi-value{font-family:var(--font-display);font-size:1.8rem;font-weight:900;color:var(--accent);margin-bottom:4px;}
+    .kpi-label{font-size:0.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;}
+    .kpi-trend{font-size:0.7rem;margin-top:6px;font-weight:600;}
+    .kpi-trend.up{color:#10b981;}
+    .kpi-trend.down{color:#f87171;}
+
+    .concept-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:14px;}
+    .concept-card{background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:18px;border-top:3px solid var(--unit-color,var(--accent));transition:all 0.3s;}
+    .concept-card:hover{border-color:var(--border-hover);transform:translateY(-3px);}
+    .concept-unit{font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+    .concept-title{font-family:var(--font-display);font-size:0.95rem;font-weight:700;margin-bottom:8px;}
+    .concept-items{font-size:0.78rem;color:var(--text-muted);line-height:1.6;}
+
+    .course-timeline{margin-top:14px;}
+    .timeline-item{display:flex;gap:16px;margin-bottom:16px;}
+    .timeline-dot{width:14px;height:14px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:4px;box-shadow:0 0 12px var(--accent-glow);}
+    .timeline-content{flex:1;background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;padding:14px 18px;}
+    .timeline-week{font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:4px;}
+    .timeline-title{font-size:0.88rem;font-weight:600;margin-bottom:4px;}
+    .timeline-desc{font-size:0.78rem;color:var(--text-muted);line-height:1.5;}
+
+    .gantt-table{font-size:0.76rem;}
+    .gantt-bar{display:inline-block;height:10px;border-radius:4px;background:var(--accent);opacity:0.75;vertical-align:middle;}
+
+    .diagram-box{background:var(--bg-deep);border:1px solid var(--border);border-radius:12px;padding:20px;margin-top:14px;overflow-x:auto;}
+    .diagram-box svg{display:block;margin:0 auto;max-width:100%;}
+
+    .quiz-container{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:24px;margin-top:16px;}
+    .quiz-question{margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+    .quiz-question:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+    .quiz-q-text{font-weight:600;font-size:0.92rem;margin-bottom:12px;color:var(--text-primary);}
+    .quiz-options{display:flex;flex-direction:column;gap:8px;}
+    .quiz-option{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;cursor:none;transition:all 0.25s;font-size:0.85rem;color:var(--text-muted);}
+    .quiz-option:hover{border-color:var(--border-hover);background:var(--bg-card);}
+    .quiz-option.selected{border-color:var(--accent);background:rgba(245,158,11,0.08);color:var(--text-primary);}
+    .quiz-option.correct{border-color:#10b981;background:rgba(16,185,129,0.1);color:#10b981;}
+    .quiz-option.incorrect{border-color:#f87171;background:rgba(248,113,113,0.08);color:#f87171;}
+    .quiz-submit{margin-top:20px;padding:12px 32px;background:var(--accent);border:none;border-radius:100px;color:#fff;font-family:var(--font-body);font-size:0.9rem;font-weight:600;cursor:none;transition:all 0.3s;}
+    .quiz-submit:hover{filter:brightness(1.1);box-shadow:0 8px 24px var(--accent-glow);}
+    .quiz-result{margin-top:20px;padding:20px 24px;border-radius:12px;display:none;}
+    .quiz-result.show{display:block;}
+    .quiz-result.pass{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);}
+    .quiz-result.fail{background:rgba(248,113,113,0.08);border:1px solid rgba(248,113,113,0.3);}
+    .quiz-result-title{font-family:var(--font-display);font-size:1.2rem;font-weight:700;margin-bottom:8px;}
+    .quiz-result-text{font-size:0.87rem;color:var(--text-muted);line-height:1.6;}
+
+    .likert-scale{display:flex;flex-direction:column;gap:10px;margin-top:12px;}
+    .likert-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;font-size:0.82rem;flex-wrap:wrap;}
+    .likert-label{flex:1;min-width:180px;color:var(--text-muted);}
+    .likert-options{display:flex;gap:6px;}
+    .likert-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:0.75rem;cursor:none;transition:all 0.2s;}
+    .likert-btn:hover,.likert-btn.active{border-color:var(--accent);background:rgba(245,158,11,0.1);color:var(--accent);}
+
+    .resource-list{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+    .resource-link{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg-deep);border:1px solid var(--border);border-radius:10px;color:var(--text-muted);font-size:0.83rem;text-decoration:none;transition:all 0.25s;}
+    .resource-link:hover{border-color:var(--border-hover);color:var(--accent);background:var(--bg-card);}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+    ::-webkit-scrollbar{width:6px;}
+    ::-webkit-scrollbar-track{background:var(--bg-deep);}
+    ::-webkit-scrollbar-thumb{background:rgba(245,158,11,0.25);border-radius:100px;}
+    ::-webkit-scrollbar-thumb:hover{background:rgba(245,158,11,0.5);}
+
+    @media(max-width:900px){
+      .cat-layout{grid-template-columns:1fr;}
+      .sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border);padding:24px;}
+      .unit-nav{flex-direction:row;flex-wrap:wrap;}
+      .semana-header-main,.temas-container,.unit-nav-bottom,.examen-badge{padding-left:24px;padding-right:24px;}
+      .unidad-hero{padding:40px 24px 36px;}
+      .resumen-grid,.concept-map{grid-template-columns:1fr;}
+    }
+    @media(max-width:680px){
+      .cat-header{padding:12px 20px;}
+      .cat-progress{display:none;}
+      .cursor,.cursor-follower{display:none;}
+      body{cursor:default;}
+      .mini-cards,.pilares-grid,.kpi-dashboard{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<div class="cursor"></div>
+<div class="cursor-follower"></div>
+
+<header class="cat-header">
+  <a href="index.html" class="back-btn">← Inicio</a>
+  <a href="index.html" class="logo"><span class="logo-icon">⬡</span><span>Academia Digital</span></a>
+  <div class="cat-progress">Unidad 4 de 4 — Desarrollo de Sistemas de Información</div>
+</header>
+
+<div class="cat-layout">
+
+  <aside class="sidebar">
+    <p class="sidebar-title">Programa del curso</p>
+    <nav class="unit-nav">
+      <a class="unit-btn" href="unidad1.html"><span class="unit-btn-num">01</span><span class="unit-btn-label">Fundamentos</span></a>
+      <a class="unit-btn" href="unidad2.html"><span class="unit-btn-num">02</span><span class="unit-btn-label">Aplicaciones</span></a>
+      <a class="unit-btn" href="unidad3.html"><span class="unit-btn-num">03</span><span class="unit-btn-label">Infraestructura</span></a>
+      <a class="unit-btn active" href="unidad4.html"><span class="unit-btn-num">04</span><span class="unit-btn-label">Desarrollo de Sistemas</span></a>
+    </nav>
+    <div class="sidebar-semanas">
+      <p class="sidebar-semanas-title">Semanas</p>
+      <a href="#semana13" class="semana-link"><span class="semana-link-num">S13</span>Ciclo de vida SDLC</a>
+      <a href="#semana14" class="semana-link"><span class="semana-link-num">S14</span>Implementación ERP</a>
+      <a href="#semana15" class="semana-link"><span class="semana-link-num">S15</span>Proyecto integrador</a>
+      <a href="#semana16" class="semana-link"><span class="semana-link-num">S16</span>Evaluación final</a>
+    </div>
+  </aside>
+
+  <main class="cat-main">
+
+    <div class="unidad-hero">
+      <div class="unidad-tag">Unidad 04</div>
+      <h1 class="unidad-titulo">Desarrollo de Sistemas de Información en la Empresa</h1>
+      <p class="unidad-subtitulo">Del análisis al despliegue: ciclo de vida de desarrollo, metodologías modernas, estrategias de implementación ERP y proyecto integrador que consolida las cuatro unidades del curso de Gerencia de Sistemas de Información.</p>
+      <div class="unidad-meta">
+        <span>📅 4 semanas</span><span>🎯 Nivel avanzado</span><span>🏗️ Proyecto ERP</span><span>🎓 Evaluación final</span>
+      </div>
+      <div class="resumen-grid">
+        <div class="resumen-item"><div class="resumen-label" style="color:var(--accent)">Objetivo</div><p>Dominar el SDLC, seleccionar metodologías y planificar la implementación exitosa de sistemas empresariales.</p></div>
+        <div class="resumen-item"><div class="resumen-label" style="color:var(--accent3)">Alcance</div><p>Waterfall, Agile, DevOps, estrategias de go-live, migración de datos, gestión del cambio y proyecto ERP.</p></div>
+        <div class="resumen-item"><div class="resumen-label" style="color:var(--accent-b)">Cierre</div><p>Proyecto integrador Distribuidora Andina S.A. + evaluación final con cuestionario interactivo del curso completo.</p></div>
+      </div>
+    </div>
+
+    <!-- SEMANA 13 -->
+    <section class="semana-section" id="semana13">
+      <div class="semana-header-main">
+        <div class="semana-num-big">13</div>
+        <div>
+          <div class="semana-week-tag">Semana 13 · Ciclo de Vida del Software</div>
+          <h2 class="semana-titulo">SDLC — Ciclo de Vida del Desarrollo de Sistemas</h2>
+          <p class="semana-intro">Las fases del ciclo de vida, las metodologías de desarrollo y su aplicación en proyectos de sistemas de información empresariales a gran escala.</p>
+        </div>
+      </div>
+      <div class="temas-container">
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.3);">🔄</div>
+              <div><div class="tema-nombre">Fases del SDLC</div><div class="tema-desc-short">Análisis, diseño, desarrollo, pruebas, implementación y mantenimiento</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">¿Qué es el SDLC?</div>
+              <p class="content-text">El <strong style="color:var(--text-primary)">Software Development Life Cycle (SDLC)</strong> es el marco estructurado que guía el desarrollo de un sistema de información desde la identificación de la necesidad hasta su retiro. En contexto empresarial, el SDLC asegura que el sistema entregue valor al negocio, cumpla requisitos funcionales y no funcionales, y sea mantenible a largo plazo.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Las 6 fases del ciclo de vida</div>
+              <div class="niveles-stack">
+                <div class="nivel-item" style="border-left-color:#3b82f6;"><div class="nivel-sigla" style="color:#3b82f6;font-size:0.85rem;min-width:80px;">1. Análisis</div><div><div class="nivel-info-title">Levantamiento de requisitos</div><div class="nivel-info-text">Identificar necesidades del negocio, entrevistar stakeholders, documentar procesos actuales (AS-IS) y definir el estado objetivo (TO-BE). Entregables: documento de requisitos, casos de uso.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#8b5cf6;"><div class="nivel-sigla" style="color:#8b5cf6;font-size:0.85rem;min-width:80px;">2. Diseño</div><div><div class="nivel-info-title">Arquitectura y especificación</div><div class="nivel-info-text">Diseño lógico (BD, interfaces, módulos) y físico (servidores, redes, integraciones). Diagramas UML, ERD, arquitectura de tres capas o microservicios.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#f59e0b;"><div class="nivel-sigla" style="color:#f59e0b;font-size:0.85rem;min-width:80px;">3. Desarrollo</div><div><div class="nivel-info-title">Codificación e integración</div><div class="nivel-info-text">Programación, configuración de ERP, desarrollo de APIs, integración con sistemas legados. Control de versiones (Git), code review y estándares de codificación.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#10b981;"><div class="nivel-sigla" style="color:#10b981;font-size:0.85rem;min-width:80px;">4. Pruebas</div><div><div class="nivel-info-title">Testing y validación</div><div class="nivel-info-text">Unitarias, integración, sistema, aceptación de usuario (UAT), rendimiento y seguridad. El objetivo es detectar defectos antes del go-live.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#06b6d4;"><div class="nivel-sigla" style="color:#06b6d4;font-size:0.85rem;min-width:80px;">5. Impl.</div><div><div class="nivel-info-title">Implementación y despliegue</div><div class="nivel-info-text">Migración de datos, capacitación, cutover, go-live y estabilización post-producción. Estrategias: directa, paralela, piloto o por fases.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#6b7280;"><div class="nivel-sigla" style="color:#6b7280;font-size:0.85rem;min-width:80px;">6. Mant.</div><div><div class="nivel-info-title">Mantenimiento evolutivo</div><div class="nivel-info-text">Corrección de errores, adaptación a cambios normativos, mejoras funcionales y optimización de rendimiento. Representa el 60–80% del costo total del ciclo de vida.</div></div></div>
+              </div>
+            </div>
+            <div class="diagram-box">
+              <svg viewBox="0 0 720 120" width="720" height="120" aria-label="Diagrama SDLC">
+                <defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#f59e0b"/></linearGradient></defs>
+                <rect x="10" y="40" width="100" height="44" rx="8" fill="rgba(59,130,246,0.15)" stroke="#3b82f6" stroke-width="1.5"/>
+                <text x="60" y="67" text-anchor="middle" fill="#f0f6ff" font-size="11" font-family="DM Sans,sans-serif">Análisis</text>
+                <rect x="125" y="40" width="100" height="44" rx="8" fill="rgba(139,92,246,0.15)" stroke="#8b5cf6" stroke-width="1.5"/>
+                <text x="175" y="67" text-anchor="middle" fill="#f0f6ff" font-size="11" font-family="DM Sans,sans-serif">Diseño</text>
+                <rect x="240" y="40" width="100" height="44" rx="8" fill="rgba(245,158,11,0.15)" stroke="#f59e0b" stroke-width="1.5"/>
+                <text x="290" y="67" text-anchor="middle" fill="#f0f6ff" font-size="11" font-family="DM Sans,sans-serif">Desarrollo</text>
+                <rect x="355" y="40" width="100" height="44" rx="8" fill="rgba(16,185,129,0.15)" stroke="#10b981" stroke-width="1.5"/>
+                <text x="405" y="67" text-anchor="middle" fill="#f0f6ff" font-size="11" font-family="DM Sans,sans-serif">Pruebas</text>
+                <rect x="470" y="40" width="100" height="44" rx="8" fill="rgba(6,182,212,0.15)" stroke="#06b6d4" stroke-width="1.5"/>
+                <text x="520" y="67" text-anchor="middle" fill="#f0f6ff" font-size="11" font-family="DM Sans,sans-serif">Impl.</text>
+                <rect x="585" y="40" width="100" height="44" rx="8" fill="rgba(107,114,128,0.15)" stroke="#6b7280" stroke-width="1.5"/>
+                <text x="635" y="67" text-anchor="middle" fill="#f0f6ff" font-size="11" font-family="DM Sans,sans-serif">Mant.</text>
+                <path d="M110 62 L125 62" stroke="url(#g1)" stroke-width="2" marker-end="url(#arrow)"/>
+                <path d="M225 62 L240 62" stroke="url(#g1)" stroke-width="2"/>
+                <path d="M340 62 L355 62" stroke="url(#g1)" stroke-width="2"/>
+                <path d="M455 62 L470 62" stroke="url(#g1)" stroke-width="2"/>
+                <path d="M570 62 L585 62" stroke="url(#g1)" stroke-width="2"/>
+                <path d="M635 90 Q360 110 60 90" fill="none" stroke="rgba(245,158,11,0.4)" stroke-width="1.5" stroke-dasharray="4 3"/>
+                <text x="360" y="108" text-anchor="middle" fill="#7a9abf" font-size="9" font-family="DM Sans,sans-serif">Retroalimentación continua</text>
+              </svg>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3);">⚡</div>
+              <div><div class="tema-nombre">Metodologías de desarrollo</div><div class="tema-desc-short">Waterfall, Spiral, Scrum, Kanban y DevOps</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Metodologías tradicionales y ágiles</div>
+              <div class="mini-cards">
+                <div class="mini-card"><div class="mini-card-label" style="color:#3b82f6">Waterfall</div><div class="mini-card-title">Cascada</div><div class="mini-card-text">Secuencial y documentado. Ideal para proyectos con requisitos estables: ERP gubernamental, sistemas regulados.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:#8b5cf6">Spiral</div><div class="mini-card-title">Espiral</div><div class="mini-card-text">Iteraciones con evaluación de riesgos en cada ciclo. Usado en proyectos de alta incertidumbre y gran escala.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent)">Scrum</div><div class="mini-card-title">Marco ágil</div><div class="mini-card-text">Sprints de 2–4 semanas, roles (PO, SM, Dev Team), ceremonias y entregas incrementales de valor.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent3)">Kanban</div><div class="mini-card-title">Flujo continuo</div><div class="mini-card-text">Visualización del trabajo, límites WIP y mejora continua. Ideal para soporte y mantenimiento evolutivo.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:#06b6d4">DevOps</div><div class="mini-card-title">CI/CD + Operaciones</div><div class="mini-card-text">Integración continua, despliegue automatizado, infraestructura como código. Acelera releases en la nube.</div></div>
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Tabla comparativa de metodologías</div>
+              <table class="compare-table">
+                <thead><tr><th>Metodología</th><th>Enfoque</th><th>Flexibilidad</th><th>Ideal para</th><th>Riesgo principal</th></tr></thead>
+                <tbody>
+                  <tr><td>Waterfall</td><td>Secuencial</td><td>Baja</td><td>Requisitos fijos, compliance</td><td>Cambios tardíos costosos</td></tr>
+                  <tr><td>Spiral</td><td>Iterativo + riesgos</td><td>Media</td><td>Proyectos críticos, R&amp;D</td><td>Complejidad de gestión</td></tr>
+                  <tr><td>Scrum</td><td>Ágil por sprints</td><td>Alta</td><td>Software a medida, MVPs</td><td>Scope creep sin PO fuerte</td></tr>
+                  <tr><td>Kanban</td><td>Flujo continuo</td><td>Alta</td><td>Soporte, mejoras incrementales</td><td>Falta de plazos fijos</td></tr>
+                  <tr><td>DevOps</td><td>Automatización CI/CD</td><td>Alta</td><td>Cloud-native, microservicios</td><td>Deuda técnica en pipelines</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);">🏭</div>
+              <div><div class="tema-nombre">Casos empresariales reales</div><div class="tema-desc-short">Implementaciones SDLC en organizaciones de referencia</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">SDLC en la práctica empresarial</div>
+              <div class="niveles-stack">
+                <div class="nivel-item" style="border-left-color:#f59e0b;"><div class="nivel-sigla" style="color:#f59e0b;font-size:0.8rem;min-width:70px;">BBVA</div><div><div class="nivel-info-title">Migración bancaria con DevOps</div><div class="nivel-info-text">BBVA adoptó DevOps y arquitectura de microservicios para acelerar releases de apps móviles de semanas a horas, con pipelines CI/CD en Azure y Kubernetes.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#3b82f6;"><div class="nivel-sigla" style="color:#3b82f6;font-size:0.8rem;min-width:70px;">Nestlé</div><div><div class="nivel-info-title">ERP global con metodología híbrida</div><div class="nivel-info-text">Implementación SAP S/4HANA en 190 países combinando Waterfall para módulos core y Scrum para desarrollos locales e integraciones.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#10b981;"><div class="nivel-sigla" style="color:#10b981;font-size:0.8rem;min-width:70px;">Spotify</div><div><div class="nivel-info-title">Modelo de squads ágiles</div><div class="nivel-info-text">Organización en squads, tribes y chapters. Cada squad opera como mini-startup con autonomía para iterar sobre funcionalidades del producto.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#8b5cf6;"><div class="nivel-sigla" style="color:#8b5cf6;font-size:0.8rem;min-width:70px;">BCP</div><div><div class="nivel-info-title">Transformación digital peruana</div><div class="nivel-info-text">Banco de Crédito del Perú migró sistemas legados a arquitectura cloud con fases SDLC estrictas de pruebas regulatorias SBS antes de cada release.</div></div></div>
+              </div>
+            </div>
+            <div class="highlight-box"><div class="highlight-label" style="color:var(--accent)">💡 Lección clave</div><p>No existe una metodología universalmente superior. Las organizaciones maduras seleccionan el enfoque según el tipo de proyecto: Waterfall para ERP regulado, Scrum para productos digitales, DevOps para plataformas cloud, y modelos híbridos (Agile-Waterfall) para implementaciones empresariales complejas.</p></div>
+            <div class="video-section">
+              <div class="video-label-bar">📹 Video — Ciclo de vida del desarrollo de software (SDLC)</div>
+              <div class="video-frame"><iframe src="https://www.youtube.com/embed/i9S_vHtW9iM" title="SDLC explicado" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+      <div class="temas-container" style="padding-top:0;">
+        <div class="biblio-section">
+          <div class="biblio-title">📚 Bibliografía — Semana 13</div>
+          <ul class="biblio-list">
+            <li>Pressman, R. &amp; Maxim, B. (2020). <em>Software Engineering: A Practitioner's Approach</em> (9th ed.). McGraw-Hill.</li>
+            <li>Sommerville, I. (2016). <em>Software Engineering</em> (10th ed.). Pearson.</li>
+            <li>Project Management Institute (2021). <em>PMBOK Guide</em> (7th ed.). PMI.</li>
+            <li>Schwaber, K. &amp; Sutherland, J. (2020). <em>The Scrum Guide</em>. scrumguides.org</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEMANA 14 -->
+    <section class="semana-section" id="semana14">
+      <div class="semana-header-main">
+        <div class="semana-num-big">14</div>
+        <div>
+          <div class="semana-week-tag">Semana 14 · Implementación de Sistemas</div>
+          <h2 class="semana-titulo">Estrategias de Implementación y Gestión del Cambio</h2>
+          <p class="semana-intro">Cómo llevar un sistema de información a producción: estrategias de conversión, capacitación, migración de datos, gestión del cambio organizacional y mitigación de riesgos.</p>
+        </div>
+      </div>
+      <div class="temas-container">
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.3);">🚀</div>
+              <div><div class="tema-nombre">Estrategias de implementación</div><div class="tema-desc-short">Directa, paralela, piloto y por fases</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Las 4 estrategias de conversión</div>
+              <div class="pilares-grid">
+                <div class="pilar-card"><div class="pilar-num">01</div><div class="pilar-title">Directa (Big Bang)</div><div class="pilar-text">Apagar el sistema antiguo y encender el nuevo en una fecha única. Rápida pero de alto riesgo.</div></div>
+                <div class="pilar-card"><div class="pilar-num">02</div><div class="pilar-title">Paralela</div><div class="pilar-text">Ambos sistemas operan simultáneamente hasta validar resultados. Costosa pero segura.</div></div>
+                <div class="pilar-card"><div class="pilar-num">03</div><div class="pilar-title">Piloto</div><div class="pilar-text">Implementar primero en un sitio o departamento piloto antes del despliegue global.</div></div>
+                <div class="pilar-card"><div class="pilar-num">04</div><div class="pilar-title">Por fases</div><div class="pilar-text">Módulo a módulo o área por área. La más común en implementaciones ERP empresariales.</div></div>
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Comparativa de estrategias</div>
+              <table class="compare-table">
+                <thead><tr><th>Estrategia</th><th>Riesgo</th><th>Costo</th><th>Tiempo</th><th>Cuándo usarla</th></tr></thead>
+                <tbody>
+                  <tr><td>Directa</td><td>Muy alto</td><td>Bajo</td><td>Corto</td><td>Sistemas pequeños, ventanas de mantenimiento amplias</td></tr>
+                  <tr><td>Paralela</td><td>Bajo</td><td>Muy alto</td><td>Largo</td><td>Sistemas críticos: banca, salud, finanzas</td></tr>
+                  <tr><td>Piloto</td><td>Medio</td><td>Medio</td><td>Medio</td><td>Organizaciones multi-sede, validación previa</td></tr>
+                  <tr><td>Por fases</td><td>Medio-bajo</td><td>Medio-alto</td><td>Medio-largo</td><td>ERP modular: finanzas → logística → ventas</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3);">👥</div>
+              <div><div class="tema-nombre">Capacitación, migración y cambio organizacional</div><div class="tema-desc-short">Factores humanos y técnicos del go-live</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Capacitación de usuarios</div>
+              <p class="content-text">La capacitación debe iniciarse <strong style="color:var(--text-primary)">antes del go-live</strong> e incluir: formación por rol (finanzas, ventas, almacén), manuales de usuario, sesiones hands-on en ambiente sandbox, super-usuarios (champions) por área y soporte post-go-live (hypercare) de 4–8 semanas.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Migración de datos</div>
+              <div class="niveles-stack">
+                <div class="nivel-item" style="border-left-color:#3b82f6;"><div class="nivel-sigla" style="color:#3b82f6;font-size:0.85rem;min-width:70px;">Extract</div><div><div class="nivel-info-title">Extracción desde legado</div><div class="nivel-info-text">Exportar maestros (clientes, productos, proveedores) y transacciones abiertas desde el sistema anterior.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#f59e0b;"><div class="nivel-sigla" style="color:#f59e0b;font-size:0.85rem;min-width:70px;">Clean</div><div><div class="nivel-info-title">Limpieza y estandarización</div><div class="nivel-info-text">Eliminar duplicados, corregir formatos, validar integridad referencial. "Basura entra, basura sale".</div></div></div>
+                <div class="nivel-item" style="border-left-color:#10b981;"><div class="nivel-sigla" style="color:#10b981;font-size:0.85rem;min-width:70px;">Load</div><div><div class="nivel-info-title">Carga al nuevo sistema</div><div class="nivel-info-text">Migraciones iterativas (mock loads) antes del cutover final. Validación con usuarios clave.</div></div></div>
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Gestión del cambio organizacional (OCM)</div>
+              <p class="content-text">El modelo ADKAR de Prosci describe cinco elementos: <strong style="color:var(--text-primary)">Awareness</strong> (conciencia del cambio), <strong style="color:var(--text-primary)">Desire</strong> (deseo de participar), <strong style="color:var(--text-primary)">Knowledge</strong> (conocimiento), <strong style="color:var(--text-primary)">Ability</strong> (habilidad) y <strong style="color:var(--text-primary)">Reinforcement</strong> (refuerzo). El 70% de los fracasos en ERP se deben a resistencia humana, no a fallas técnicas.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Principales riesgos de implementación</div>
+              <div class="mini-cards">
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--rose)">Riesgo</div><div class="mini-card-title">Scope creep</div><div class="mini-card-text">Personalización excesiva que incrementa costo y plazo. Mitigación: change control board.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--rose)">Riesgo</div><div class="mini-card-title">Datos corruptos</div><div class="mini-card-text">Migración sin limpieza previa. Mitigación: mock loads y validación cruzada.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--rose)">Riesgo</div><div class="mini-card-title">Resistencia al cambio</div><div class="mini-card-text">Usuarios que sabotean la adopción. Mitigación: sponsors ejecutivos y champions.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--rose)">Riesgo</div><div class="mini-card-title">Integración fallida</div><div class="mini-card-text">APIs mal diseñadas con sistemas legados. Mitigación: pruebas de integración tempranas.</div></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);">🏢</div>
+              <div><div class="tema-nombre">Casos: SAP S/4HANA, Oracle Fusion y Dynamics 365</div><div class="tema-desc-short">Implementaciones ERP de referencia global</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Tres gigantes ERP en acción</div>
+              <table class="compare-table">
+                <thead><tr><th>ERP</th><th>Empresa caso</th><th>Estrategia</th><th>Resultado clave</th></tr></thead>
+                <tbody>
+                  <tr><td>SAP S/4HANA</td><td>Unilever</td><td>Por fases, 4 regiones</td><td>Reducción 25% en cierre contable mensual; plataforma única para 190 países</td></tr>
+                  <tr><td>SAP S/4HANA</td><td>Alicorp (Perú)</td><td>Piloto + fases</td><td>Integración finanzas-logística-ventas; trazabilidad de productos alimenticios</td></tr>
+                  <tr><td>Oracle Fusion Cloud</td><td>Grupo Bimbo</td><td>Cloud-first, por fases</td><td>ERP financiero y HCM unificados en 33 países con Oracle Cloud</td></tr>
+                  <tr><td>Microsoft Dynamics 365</td><td>Grupo Gloria (Perú)</td><td>Híbrida + piloto</td><td>D365 Finance + Supply Chain; integración con Power BI para reporting</td></tr>
+                  <tr><td>Dynamics 365</td><td>Carrefour</td><td>Paralela parcial</td><td>Retail omnicanal con D365 Commerce y Azure para e-commerce</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="highlight-box green"><div class="highlight-label" style="color:var(--accent3)">✅ Factor de éxito común</div><p>Las implementaciones exitosas comparten: patrocinio ejecutivo visible, metodología formal (SAP Activate, Oracle Unified Method, Microsoft Sure Step), gestión del cambio desde el día 1, y adopción de best practices del vendor antes de personalizar.</p></div>
+            <div class="video-section">
+              <div class="video-label-bar">📹 Video — Estrategias de implementación de sistemas ERP</div>
+              <div class="video-frame"><iframe src="https://www.youtube.com/embed/9yMRalzaKVQ" title="Implementación ERP" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+      <div class="temas-container" style="padding-top:0;">
+        <div class="biblio-section">
+          <div class="biblio-title">📚 Bibliografía — Semana 14</div>
+          <ul class="biblio-list">
+            <li>Hiatt, J. (2006). <em>ADKAR: A Model for Change in Business, Government and Community</em>. Prosci Research.</li>
+            <li>Wallace, L. &amp; Kremzar, M. (2008). <em>ERP: Making It Happen</em>. Wiley.</li>
+            <li>SAP SE (2023). <em>SAP Activate Methodology Guide</em>. SAP Help Portal.</li>
+            <li>Microsoft (2024). <em>Dynamics 365 Implementation Guide</em>. learn.microsoft.com</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEMANA 15 -->
+    <section class="semana-section" id="semana15">
+      <div class="semana-header-main">
+        <div class="semana-num-big">15</div>
+        <div>
+          <div class="semana-week-tag">Semana 15 · Proyecto Integrador</div>
+          <h2 class="semana-titulo">Implementación de un Sistema ERP en una Empresa de Distribución</h2>
+          <p class="semana-intro">Proyecto integrador completo: Distribuidora Andina S.A. — diagnóstico, propuesta tecnológica, arquitectura híbrida, cronograma, costos, KPIs y conclusiones.</p>
+        </div>
+      </div>
+      <div class="temas-container">
+
+        <div class="tema-acordeon open">
+          <button class="tema-trigger" aria-expanded="true">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.3);">📋</div>
+              <div><div class="tema-nombre">Introducción y planteamiento del problema</div><div class="tema-desc-short">Distribuidora Andina S.A. — contexto y diagnóstico</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Introducción</div>
+              <p class="content-text"><strong style="color:var(--text-primary)">Distribuidora Andina S.A.</strong> es una empresa peruana de distribución de productos de consumo masivo con 15 años de operación, 3 centros de distribución (Lima, Arequipa, Trujillo), 120 empleados y un catálogo de 2,400 SKUs. Atiende a 850 clientes B2B (bodegas, markets, HORECA) en la región andina del Perú.</p>
+              <p class="content-text" style="margin-top:10px;">Este proyecto integrador aplica los conocimientos de las cuatro unidades del curso para diseñar e implementar un ERP que unifique finanzas, inventario, ventas y logística en una plataforma integrada con arquitectura cloud híbrida.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Planteamiento del problema</div>
+              <p class="content-text">Andina opera con <strong style="color:var(--text-primary)">5 sistemas desconectados</strong>: Excel para inventario, un sistema contable legacy (CONCAR standalone), WhatsApp para pedidos, un CRM básico sin integración y planillas en hojas de cálculo. Esto genera:</p>
+              <div class="mini-cards">
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--rose)">Problema</div><div class="mini-card-title">Quiebres de stock</div><div class="mini-card-text">15% de pedidos no se atienden por información de inventario desactualizada (retraso de 24–48 h).</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--rose)">Problema</div><div class="mini-card-title">Cierre contable lento</div><div class="mini-card-text">El cierre mensual toma 12 días por conciliaciones manuales entre sistemas.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--rose)">Problema</div><div class="mini-card-title">Sin trazabilidad</div><div class="mini-card-text">Imposible rastrear un lote de producto desde almacén hasta cliente (riesgo sanitario).</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--rose)">Problema</div><div class="mini-card-title">Decisiones sin datos</div><div class="mini-card-text">Gerencia comercial no tiene dashboard de ventas por zona, vendedor ni producto en tiempo real.</div></div>
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Objetivos del proyecto</div>
+              <div class="niveles-stack">
+                <div class="nivel-item" style="border-left-color:var(--accent);"><div class="nivel-sigla" style="color:var(--accent);font-size:0.8rem;min-width:60px;">Gen.</div><div><div class="nivel-info-title">Objetivo general</div><div class="nivel-info-text">Implementar un ERP integrado que unifique los procesos de negocio de Distribuidora Andina S.A. en una plataforma cloud híbrida.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#3b82f6;"><div class="nivel-sigla" style="color:#3b82f6;font-size:0.8rem;min-width:60px;">E1</div><div><div class="nivel-info-title">Reducir quiebres de stock a &lt;3%</div><div class="nivel-info-text">Inventario en tiempo real across 3 CD con alertas automáticas de reabastecimiento.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#10b981;"><div class="nivel-sigla" style="color:#10b981;font-size:0.8rem;min-width:60px;">E2</div><div><div class="nivel-info-title">Cierre contable en ≤3 días</div><div class="nivel-info-text">Automatizar asientos, conciliación bancaria e integración facturación electrónica SUNAT.</div></div></div>
+                <div class="nivel-item" style="border-left-color:#8b5cf6;"><div class="nivel-sigla" style="color:#8b5cf6;font-size:0.8rem;min-width:60px;">E3</div><div><div class="nivel-info-title">Dashboard gerencial en tiempo real</div><div class="nivel-info-text">KPIs de ventas, márgenes, rotación de inventario y DSO accesibles desde móvil.</div></div></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3);">🔍</div>
+              <div><div class="tema-nombre">Diagnóstico y propuesta tecnológica</div><div class="tema-desc-short">Análisis AS-IS, evaluación SAP B1 vs Dynamics 365</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Diagnóstico AS-IS</div>
+              <p class="content-text">Mediante entrevistas a gerentes de finanzas, logística y ventas, y mapeo de procesos BPMN, se identificaron <strong style="color:var(--text-primary)">23 procesos críticos</strong>, de los cuales 17 requieren intervención manual diaria. La madurez digital se evaluó en nivel 2 de 5 (Gartner ITScore).</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Evaluación tecnológica: SAP Business One vs Microsoft Dynamics 365</div>
+              <table class="compare-table">
+                <thead><tr><th>Criterio</th><th>SAP Business One</th><th>Dynamics 365 BC</th><th>Ponderación</th></tr></thead>
+                <tbody>
+                  <tr><td>Costo licencias (3 años)</td><td>USD 85,000</td><td>USD 72,000</td><td>20%</td></tr>
+                  <tr><td>Funcionalidad distribución</td><td>Excelente (add-on distrib.)</td><td>Muy buena (nativa)</td><td>25%</td></tr>
+                  <tr><td>Integración Power BI</td><td>Media (requiere conector)</td><td>Nativa</td><td>15%</td></tr>
+                  <tr><td>Facturación electrónica SUNAT</td><td>Sí (localización PE)</td><td>Sí (localización PE)</td><td>20%</td></tr>
+                  <tr><td>Curva de aprendizaje</td><td>Moderada</td><td>Baja (UI familiar)</td><td>10%</td></tr>
+                  <tr><td>Soporte local Perú</td><td>Amplio (partners SAP)</td><td>Creciente (partners MS)</td><td>10%</td></tr>
+                  <tr><td><strong>Decisión</strong></td><td colspan="3"><strong style="color:var(--accent)">Microsoft Dynamics 365 Business Central — Cloud (SaaS)</strong> por mejor relación costo-beneficio, integración nativa con Power BI y menor curva de adopción para el equipo.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Arquitectura cloud híbrida propuesta</div>
+              <div class="diagram-box">
+                <svg viewBox="0 0 680 280" width="680" height="280" aria-label="Arquitectura híbrida Distribuidora Andina">
+                  <rect x="20" y="20" width="640" height="50" rx="10" fill="rgba(59,130,246,0.08)" stroke="#3b82f6" stroke-width="1.5"/>
+                  <text x="340" y="50" text-anchor="middle" fill="#3b82f6" font-size="13" font-weight="600" font-family="DM Sans,sans-serif">☁️ NUBE PÚBLICA — Microsoft Azure</text>
+                  <rect x="40" y="85" width="180" height="60" rx="8" fill="rgba(245,158,11,0.12)" stroke="#f59e0b" stroke-width="1.5"/>
+                  <text x="130" y="112" text-anchor="middle" fill="#f0f6ff" font-size="11" font-weight="600" font-family="DM Sans,sans-serif">Dynamics 365 BC</text>
+                  <text x="130" y="128" text-anchor="middle" fill="#7a9abf" font-size="9" font-family="DM Sans,sans-serif">ERP SaaS</text>
+                  <rect x="250" y="85" width="180" height="60" rx="8" fill="rgba(16,185,129,0.12)" stroke="#10b981" stroke-width="1.5"/>
+                  <text x="340" y="112" text-anchor="middle" fill="#f0f6ff" font-size="11" font-weight="600" font-family="DM Sans,sans-serif">Power BI</text>
+                  <text x="340" y="128" text-anchor="middle" fill="#7a9abf" font-size="9" font-family="DM Sans,sans-serif">Dashboards &amp; Analytics</text>
+                  <rect x="460" y="85" width="180" height="60" rx="8" fill="rgba(139,92,246,0.12)" stroke="#8b5cf6" stroke-width="1.5"/>
+                  <text x="550" y="112" text-anchor="middle" fill="#f0f6ff" font-size="11" font-weight="600" font-family="DM Sans,sans-serif">Azure API Mgmt</text>
+                  <text x="550" y="128" text-anchor="middle" fill="#7a9abf" font-size="9" font-family="DM Sans,sans-serif">Integraciones</text>
+                  <rect x="20" y="170" width="640" height="50" rx="10" fill="rgba(107,114,128,0.08)" stroke="#6b7280" stroke-width="1.5"/>
+                  <text x="340" y="200" text-anchor="middle" fill="#6b7280" font-size="13" font-weight="600" font-family="DM Sans,sans-serif">🏢 ON-PREMISE — Centros de Distribución</text>
+                  <rect x="40" y="235" width="140" height="40" rx="6" fill="rgba(245,158,11,0.08)" stroke="rgba(245,158,11,0.4)" stroke-width="1"/>
+                  <text x="110" y="260" text-anchor="middle" fill="#7a9abf" font-size="10" font-family="DM Sans,sans-serif">Handhelds WMS</text>
+                  <rect x="200" y="235" width="140" height="40" rx="6" fill="rgba(245,158,11,0.08)" stroke="rgba(245,158,11,0.4)" stroke-width="1"/>
+                  <text x="270" y="260" text-anchor="middle" fill="#7a9abf" font-size="10" font-family="DM Sans,sans-serif">Impresoras fiscales</text>
+                  <rect x="360" y="235" width="140" height="40" rx="6" fill="rgba(245,158,11,0.08)" stroke="rgba(245,158,11,0.4)" stroke-width="1"/>
+                  <text x="430" y="260" text-anchor="middle" fill="#7a9abf" font-size="10" font-family="DM Sans,sans-serif">VPN Site-to-Site</text>
+                  <rect x="520" y="235" width="120" height="40" rx="6" fill="rgba(245,158,11,0.08)" stroke="rgba(245,158,11,0.4)" stroke-width="1"/>
+                  <text x="580" y="260" text-anchor="middle" fill="#7a9abf" font-size="10" font-family="DM Sans,sans-serif">Backup local</text>
+                  <line x1="130" y1="145" x2="130" y2="170" stroke="rgba(245,158,11,0.5)" stroke-width="1.5" stroke-dasharray="4"/>
+                  <line x1="340" y1="145" x2="340" y2="170" stroke="rgba(245,158,11,0.5)" stroke-width="1.5" stroke-dasharray="4"/>
+                  <line x1="550" y1="145" x2="550" y2="170" stroke="rgba(245,158,11,0.5)" stroke-width="1.5" stroke-dasharray="4"/>
+                </svg>
+              </div>
+              <p class="content-text" style="margin-top:12px;">El ERP y analytics residen en Azure (SaaS). Los centros de distribución mantienen conectividad via VPN, handhelds para picking/almacén y backup local para continuidad operativa (DRP).</p>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);">📊</div>
+              <div><div class="tema-nombre">Cronograma, costos, beneficios y KPIs</div><div class="tema-desc-short">Gantt, presupuesto, ROI y dashboard de indicadores</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Cronograma del proyecto (Gantt)</div>
+              <table class="compare-table gantt-table">
+                <thead><tr><th>Fase / Actividad</th><th>M1</th><th>M2</th><th>M3</th><th>M4</th><th>M5</th><th>M6</th><th>M7</th><th>M8</th></tr></thead>
+                <tbody>
+                  <tr><td>1. Análisis y diseño</td><td><span class="gantt-bar" style="width:90%"></span></td><td><span class="gantt-bar" style="width:50%"></span></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                  <tr><td>2. Configuración ERP</td><td></td><td><span class="gantt-bar" style="width:50%"></span></td><td><span class="gantt-bar" style="width:90%"></span></td><td><span class="gantt-bar" style="width:60%"></span></td><td></td><td></td><td></td><td></td></tr>
+                  <tr><td>3. Migración de datos</td><td></td><td></td><td></td><td><span class="gantt-bar" style="width:50%"></span></td><td><span class="gantt-bar" style="width:90%"></span></td><td></td><td></td><td></td></tr>
+                  <tr><td>4. Pruebas (UAT)</td><td></td><td></td><td></td><td></td><td><span class="gantt-bar" style="width:50%"></span></td><td><span class="gantt-bar" style="width:90%"></span></td><td></td><td></td></tr>
+                  <tr><td>5. Capacitación</td><td></td><td></td><td></td><td></td><td></td><td><span class="gantt-bar" style="width:50%"></span></td><td><span class="gantt-bar" style="width:70%"></span></td><td></td></tr>
+                  <tr><td>6. Go-live + Hypercare</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td><span class="gantt-bar" style="width:90%"></span></td></tr>
+                </tbody>
+              </table>
+              <p class="content-text" style="margin-top:10px;font-size:0.78rem;">Duración total: 8 meses. Metodología: Microsoft Sure Step con sprints quincenales para configuración y UAT.</p>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Estimación de costos (USD)</div>
+              <table class="compare-table">
+                <thead><tr><th>Concepto</th><th>Año 1</th><th>Año 2-3 (anual)</th><th>Notas</th></tr></thead>
+                <tbody>
+                  <tr><td>Licencias D365 BC (25 users)</td><td>$24,000</td><td>$24,000</td><td>SaaS cloud, facturación anual</td></tr>
+                  <tr><td>Implementación (consultor + PM)</td><td>$45,000</td><td>—</td><td>Partner certificado Microsoft</td></tr>
+                  <tr><td>Migración de datos</td><td>$8,000</td><td>—</td><td>Maestros + histórico 2 años</td></tr>
+                  <tr><td>Capacitación</td><td>$5,000</td><td>$2,000</td><td>120 usuarios, 3 CD</td></tr>
+                  <tr><td>Power BI Pro (10 users)</td><td>$1,200</td><td>$1,200</td><td>Dashboards gerenciales</td></tr>
+                  <tr><td>Infraestructura (VPN, handhelds)</td><td>$12,000</td><td>$3,000</td><td>Capex inicial + mantenimiento</td></tr>
+                  <tr><td><strong>Total</strong></td><td><strong style="color:var(--accent)">$95,200</strong></td><td><strong style="color:var(--accent)">$30,200</strong></td><td>ROI estimado: 18 meses</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Beneficios esperados</div>
+              <div class="mini-cards">
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent3)">Beneficio</div><div class="mini-card-title">-80% quiebres de stock</div><div class="mini-card-text">De 15% a &lt;3% gracias a inventario en tiempo real y alertas automáticas.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent3)">Beneficio</div><div class="mini-card-title">Cierre en 3 días</div><div class="mini-card-text">Reducción de 12 a 3 días en cierre contable mensual.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent3)">Beneficio</div><div class="mini-card-title">+12% ventas</div><div class="mini-card-text">Mejor atención al cliente B2B con portal de pedidos y tracking.</div></div>
+                <div class="mini-card"><div class="mini-card-label" style="color:var(--accent3)">Beneficio</div><div class="mini-card-title">Trazabilidad 100%</div><div class="mini-card-text">Lote a lote desde recepción hasta entrega al cliente final.</div></div>
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Dashboard de KPIs — Mockup post-implementación</div>
+              <div class="kpi-dashboard">
+                <div class="kpi-card"><div class="kpi-value">97.2%</div><div class="kpi-label">Fill Rate</div><div class="kpi-trend up">▲ +14.2 pp</div></div>
+                <div class="kpi-card"><div class="kpi-value">3.1d</div><div class="kpi-label">Cierre contable</div><div class="kpi-trend up">▲ -8.9 días</div></div>
+                <div class="kpi-card"><div class="kpi-value">S/ 2.4M</div><div class="kpi-label">Ventas mes</div><div class="kpi-trend up">▲ +12%</div></div>
+                <div class="kpi-card"><div class="kpi-value">28d</div><div class="kpi-label">DSO</div><div class="kpi-trend up">▲ -5 días</div></div>
+                <div class="kpi-card"><div class="kpi-value">4.2x</div><div class="kpi-label">Rotación inv.</div><div class="kpi-trend up">▲ +0.8x</div></div>
+                <div class="kpi-card"><div class="kpi-value">99.1%</div><div class="kpi-label">OTIF entregas</div><div class="kpi-trend up">▲ +11 pp</div></div>
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Conclusiones</div>
+              <p class="content-text">La implementación de Dynamics 365 Business Central en arquitectura cloud híbrida permitirá a Distribuidora Andina S.A. superar sus limitaciones operativas actuales, alcanzar visibilidad en tiempo real sobre inventario y finanzas, y sentar las bases para una expansión a 2 CD adicionales en 2027. El proyecto demuestra la aplicación integrada del SDLC, gestión del cambio, selección de EAS y arquitectura cloud aprendidos en las cuatro unidades del curso.</p>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+      <div class="temas-container" style="padding-top:0;">
+        <div class="biblio-section">
+          <div class="biblio-title">📚 Bibliografía — Semana 15</div>
+          <ul class="biblio-list">
+            <li>Microsoft (2024). <em>Dynamics 365 Business Central — Implementation Guide</em>. learn.microsoft.com</li>
+            <li>Hammer, M. &amp; Champy, J. (2006). <em>Reengineering the Corporation</em>. Harper Business.</li>
+            <li>APICS (2022). <em>Supply Chain Operations Reference (SCOR) Model</em>.</li>
+            <li>SUNAT (2024). <em>Guía de Facturación Electrónica</em>. sunat.gob.pe</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEMANA 16 -->
+    <section class="semana-section" id="semana16">
+      <div class="semana-header-main">
+        <div class="semana-num-big">16</div>
+        <div>
+          <div class="semana-week-tag">Semana 16 · Cierre del Curso</div>
+          <h2 class="semana-titulo">Evaluación Final y Consolidación del Curso</h2>
+          <p class="semana-intro">Resumen integrador de las cuatro unidades, mapa conceptual, línea de tiempo del curso, cuestionario interactivo, autoevaluación y bibliografía general.</p>
+        </div>
+      </div>
+      <div class="temas-container">
+
+        <div class="tema-acordeon open">
+          <button class="tema-trigger" aria-expanded="true">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(245,158,11,0.1);border-color:rgba(245,158,11,0.3);">🗺️</div>
+              <div><div class="tema-nombre">Resumen de las 4 unidades y mapa conceptual</div><div class="tema-desc-short">Visión integradora del curso completo</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Mapa conceptual del curso</div>
+              <div class="concept-map">
+                <div class="concept-card" style="--unit-color:#3b82f6;">
+                  <div class="concept-unit" style="color:#3b82f6">Unidad I · Semanas 1-4</div>
+                  <div class="concept-title">Fundamentos e Infraestructura</div>
+                  <div class="concept-items">Sistemas de información · TPS, MIS, DSS, EIS · Cloud computing · IaaS, PaaS, SaaS · Modelos de despliegue · Infraestructura TI · Seguridad y gobernanza</div>
+                </div>
+                <div class="concept-card" style="--unit-color:#e879f9;">
+                  <div class="concept-unit" style="color:#e879f9">Unidad II · Semanas 5-8</div>
+                  <div class="concept-title">Aplicaciones Empresariales</div>
+                  <div class="concept-items">Business Intelligence · Estructura informática EPS · CRM, SCM, ERP, SIG · Enterprise Application Software · Nube híbrida · Negocio inteligente</div>
+                </div>
+                <div class="concept-card" style="--unit-color:#10b981;">
+                  <div class="concept-unit" style="color:#10b981">Unidad III · Semanas 9-12</div>
+                  <div class="concept-title">Infraestructura y Gestión TI</div>
+                  <div class="concept-items">Gobierno de TI · ITIL y gestión de servicios · Gestión de incidencias y cambios · Mesa de ayuda · COBIT · Continuidad del negocio · Soporte tecnológico</div>
+                </div>
+                <div class="concept-card" style="--unit-color:#f59e0b;">
+                  <div class="concept-unit" style="color:#f59e0b">Unidad IV · Semanas 13-16</div>
+                  <div class="concept-title">Desarrollo de Sistemas</div>
+                  <div class="concept-items">SDLC · Metodologías ágiles y DevOps · Implementación ERP · Gestión del cambio · Proyecto integrador · Evaluación final</div>
+                </div>
+              </div>
+            </div>
+            <div class="content-section">
+              <div class="content-title">Línea de tiempo del curso (16 semanas)</div>
+              <div class="course-timeline">
+                <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-week">Semanas 1-4</div><div class="timeline-title">Unidad I — Fundamentos</div><div class="timeline-desc">SI, niveles organizacionales, cloud e infraestructura tecnológica.</div></div></div>
+                <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-week">Semanas 5-8</div><div class="timeline-title">Unidad II — Aplicaciones</div><div class="timeline-desc">BI, EPS, CRM/ERP/SCM y nube híbrida. Examen parcial.</div></div></div>
+                <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-week">Semanas 9-12</div><div class="timeline-title">Unidad III — Infraestructura TI</div><div class="timeline-desc">Gobierno TI, ITIL, incidentes, cambios y continuidad operativa.</div></div></div>
+                <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-week">Semanas 13-16</div><div class="timeline-title">Unidad IV — Desarrollo</div><div class="timeline-desc">SDLC, implementación ERP, proyecto Distribuidora Andina y evaluación final.</div></div></div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.3);">✅</div>
+              <div><div class="tema-nombre">Cuestionario interactivo — Evaluación final</div><div class="tema-desc-short">12 preguntas del curso completo con retroalimentación de puntaje</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+            <div class="content-section">
+              <div class="content-title">Evalúa tus conocimientos del curso</div>
+              <p class="content-text">Responde las 12 preguntas y presiona "Calificar". Se requiere mínimo 70% (9/12) para aprobar.</p>
+              <div class="quiz-container" id="quizFinal">
+
+                <div class="quiz-question" data-q="1" data-answer="b">
+                  <div class="quiz-q-text">1. ¿Cuál de los siguientes NO es un nivel clásico de sistema de información?</div>
+                  <div class="quiz-options">
+                    <div class="quiz-option" data-val="a">TPS — Transaction Processing System</div>
+                    <div class="quiz-option" data-val="b">GPS — Geographic Positioning System</div>
+                    <div class="quiz-option" data-val="c">DSS — Decision Support System</div>
+                    <div class="quiz-option" data-val="d">EIS — Executive Information System</div>
+                  </div>
+                </div>
+
+                <div class="quiz-question" data-q="2" data-answer="c">
+                  <div class="quiz-q-text">2. En el modelo de servicio cloud, ¿cuál entrega aplicaciones listas para usar vía navegador?</div>
+                  <div class="quiz-options">
+                    <div class="quiz-option" data-val="a">IaaS</div>
+                    <div class="quiz-option" data-val="b">PaaS</div>
+                    <div class="quiz-option" data-val="c">SaaS</div>
+                    <div class="quiz-option" data-val="d">DaaS</div>
+                  </div>
+                </div>
+
+                <div class="quiz-question" data-q="3" data-answer="a">
+                  <div class="quiz-q-text">3. ¿Qué sistema empresarial integra finanzas, RRHH, producción y logística en una plataforma única?</div>
+                  <div class="quiz-options">
+                    <div class="quiz-option" data-val="a">ERP</div>
+                    <div class="quiz-option" data-val="b">CRM</div>
+                    <div class="quiz-option" data-val="c">SCM</div>
+                    <div class="quiz-option" data-val="d">BI</div>
+                  </div>
+                </div>
+
+                <div class="quiz-question" data-q="4" data-answer="d">
+                  <div class="quiz-q-text">4. Los tres planos de la estructura informática EPS son:</div>
+                  <div class="quiz-options">
+                    <div class="quiz-option" data-val="a">Económico, Político, Social</div>
+                    <div class="quiz-option" data-val="b">Hardware, Software, Redes</div>
+                    <div class="quiz-option" data-val="c">Entrada, Proceso, Salida</div>
+                    <div class="quiz-option" data-val="d">Estratégico, Procesos, Sistemas</div>
+                  </div>
+                </div>
+
+                <div class="quiz-question" data-q="5" data-answer="b">
+                  <div class="quiz-q-text">5. ¿Cuál es la primera fase del SDLC?</div>
+                  <div class="quiz-options">
+                    <div class="quiz-option" data-val="a">Desarrollo</div>
+                    <div class="quiz-option" data-val="b">Análisis de requisitos</div>
+                    <div class="quiz-option" data-val="c">Pruebas</div>
+                    <div class="quiz-option" data-val="d">Mantenimiento</div>
+                  </div>
+                </div>
+
+                <div class="quiz-question" data-q="6" data-answer="c">
+                  <div class="quiz-q-text">6. Scrum organiza el trabajo en periodos llamados:</div>
+                  <div class="quiz-options">
+                    <div class="quiz-option" data-val="a">Waterfalls</div>
+                    <div class="quiz-option" data-val="b">Kanbans</div>
+                    <div class="quiz-option" data-val="c">Sprints</div>
+                    <div class="quiz-option" data-val="d">Releases</div>
+                  </div>
+                </div>
+
+                <div class="quiz-question" data-q="7" data-answer="a">
+                  <div class="quiz-q-text">7. La estrategia de implementación donde ambos sistemas operan simultáneamente se llama:</div>
+                  <div class="quiz-options">
+                    <div class="quiz-option" data-val="a">Paralela</div>
+                    <div class="quiz-option" data-val="b">Directa (Big Bang)</div>
+                    <div class="quiz-option" data-val="c">Piloto</div>
+                    <div class="quiz-option" data-val="d">Retiro</div>
+                  </div>
+                </div>
+
+                <div class="quiz-question" data-q="8" data-answer="d">
+                  <div class="quiz-q-text">8. El modelo ADKAR pertenece al campo de:</div>
+                  <div class="quiz-options">
+                    <div class="quiz-option" data-val="a">Desarrollo ágil</div>
+                    <div class="quiz-option" data-val="b">Base de datos</div>
+                    <div class="quiz-option" data-val="c">Ciberseguridad</div>
+                    <div class="quiz-option" data-val="d">Gestión del cambio organizacional</div>
+                  </div>
+                </div>
+
+                <div class="quiz-question" data-q="9" data-answer="b">
+                  <div class="quiz-q-text">9. ITIL es un marco de referencia para:</div>
+                  <div class="quiz-options">
+                    <div class="quiz-option" data-val="a">Desarrollo de software</div>
+                    <div class="quiz-option" data-val="b">Gestión de servicios de TI</div>
+                    <div class="quiz-option" data-val="c">Contabilidad financiera</div>
+                    <div class="quiz-option" data-val="d">Marketing digital</div>
+                  </div>
+                </div>
+
+                <div class="quiz-question" data-q="10" data-answer="c">
+                  <div class="quiz-q-text">10. En Business Intelligence, ETL significa:</div>
+                  <div class="quiz-options">
+                    <div class="quiz-option" data-val="a">Enterprise Transaction Logic</div>
+                    <div class="quiz-option" data-val="b">Electronic Transfer Link</div>
+                    <div class="quiz-option" data-val="c">Extract, Transform, Load</div>
+                    <div class="quiz-option" data-val="d">External Table Library</div>
+                  </div>
+                </div>
+
+                <div class="quiz-question" data-q="11" data-answer="a">
+                  <div class="quiz-q-text">11. DevOps combina principalmente:</div>
+                  <div class="quiz-options">
+                    <div class="quiz-option" data-val="a">Desarrollo y operaciones con CI/CD</div>
+                    <div class="quiz-option" data-val="b">Ventas y marketing</div>
+                    <div class="quiz-option" data-val="c">Finanzas y contabilidad</div>
+                    <div class="quiz-option" data-val="d">Diseño gráfico y UX</div>
+                  </div>
+                </div>
+
+                <div class="quiz-question" data-q="12" data-answer="b">
+                  <div class="quiz-q-text">12. En el proyecto Distribuidora Andina, el ERP seleccionado fue:</div>
+                  <div class="quiz-options">
+                    <div class="quiz-option" data-val="a">SAP S/4HANA</div>
+                    <div class="quiz-option" data-val="b">Microsoft Dynamics 365 Business Central</div>
+                    <div class="quiz-option" data-val="c">Oracle Fusion Cloud</div>
+                    <div class="quiz-option" data-val="d">Odoo Community</div>
+                  </div>
+                </div>
+
+                <button type="button" class="quiz-submit" id="quizSubmit">Calificar respuestas</button>
+                <div class="quiz-result" id="quizResult">
+                  <div class="quiz-result-title" id="quizResultTitle"></div>
+                  <p class="quiz-result-text" id="quizResultText"></p>
+                </div>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+        <div class="tema-acordeon">
+          <button class="tema-trigger" aria-expanded="false">
+            <div class="tema-trigger-left">
+              <div class="tema-icon" style="background:rgba(16,185,129,0.1);border-color:rgba(16,185,129,0.3);">📖</div>
+              <div><div class="tema-nombre">Banco de preguntas, autoevaluación y recursos</div><div class="tema-desc-short">Material de repaso y evaluación formativa adicional</div></div>
+            </div>
+            <span class="tema-chevron">▼</span>
+          </button>
+          <div class="tema-body"><div class="tema-content">
+
+            <div class="content-section">
+              <div class="content-title">Banco de preguntas — Repaso</div>
+
+              <div class="tema-acordeon" style="margin-top:10px;">
+                <button class="tema-trigger" aria-expanded="false">
+                  <div class="tema-trigger-left">
+                    <div class="tema-icon" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.25);font-size:0.8rem;">U1</div>
+                    <div><div class="tema-nombre">Preguntas Unidad I — Fundamentos</div><div class="tema-desc-short">5 preguntas de repaso</div></div>
+                  </div>
+                  <span class="tema-chevron">▼</span>
+                </button>
+                <div class="tema-body"><div class="tema-content">
+                  <p class="content-text">• ¿Cuál es la diferencia entre datos, información y conocimiento?<br>• Explique los modelos de despliegue cloud: público, privado e híbrido.<br>• ¿Qué rol cumple un TPS en una empresa manufacturera?<br>• Mencione tres ventajas y tres riesgos del cloud computing.<br>• ¿Qué es la gobernanza de TI y por qué es importante?</p>
+                </div></div>
+              </div>
+
+              <div class="tema-acordeon">
+                <button class="tema-trigger" aria-expanded="false">
+                  <div class="tema-trigger-left">
+                    <div class="tema-icon" style="background:rgba(232,121,249,0.08);border-color:rgba(232,121,249,0.25);font-size:0.8rem;">U2</div>
+                    <div><div class="tema-nombre">Preguntas Unidad II — Aplicaciones</div><div class="tema-desc-short">5 preguntas de repaso</div></div>
+                  </div>
+                  <span class="tema-chevron">▼</span>
+                </button>
+                <div class="tema-body"><div class="tema-content">
+                  <p class="content-text">• Diferencie CRM, SCM y ERP con un ejemplo de cada uno.<br>• ¿Qué es un Data Warehouse y cómo se relaciona con el BI?<br>• Describa los tres planos EPS con un ejemplo empresarial.<br>• ¿Qué son las 5 Rs de migración a la nube híbrida?<br>• ¿Cómo genera ventaja competitiva la inteligencia de negocios?</p>
+                </div></div>
+              </div>
+
+              <div class="tema-acordeon">
+                <button class="tema-trigger" aria-expanded="false">
+                  <div class="tema-trigger-left">
+                    <div class="tema-icon" style="background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.25);font-size:0.8rem;">U3</div>
+                    <div><div class="tema-nombre">Preguntas Unidad III — Infraestructura</div><div class="tema-desc-short">5 preguntas de repaso</div></div>
+                  </div>
+                  <span class="tema-chevron">▼</span>
+                </button>
+                <div class="tema-body"><div class="tema-content">
+                  <p class="content-text">• ¿Cuáles son los procesos core de ITIL v4?<br>• Diferencie un incidente de un problema en gestión de TI.<br>• ¿Qué es un SLA y qué elementos debe contener?<br>• Explique el ciclo de Deming (PDCA) aplicado a servicios TI.<br>• ¿Qué es la continuidad del negocio (BCP) y cuál es su relación con TI?</p>
+                </div></div>
+              </div>
+
+              <div class="tema-acordeon">
+                <button class="tema-trigger" aria-expanded="false">
+                  <div class="tema-trigger-left">
+                    <div class="tema-icon" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.25);font-size:0.8rem;">U4</div>
+                    <div><div class="tema-nombre">Preguntas Unidad IV — Desarrollo</div><div class="tema-desc-short">5 preguntas de repaso</div></div>
+                  </div>
+                  <span class="tema-chevron">▼</span>
+                </button>
+                <div class="tema-body"><div class="tema-content">
+                  <p class="content-text">• Enumere y describa brevemente las 6 fases del SDLC.<br>• Compare Waterfall y Scrum: ¿cuándo usar cada uno?<br>• ¿Cuáles son las 4 estrategias de implementación de sistemas?<br>• ¿Qué es la migración de datos y por qué es crítica en un ERP?<br>• Describa el proyecto Distribuidora Andina: problema, solución y KPIs.</p>
+                </div></div>
+              </div>
+            </div>
+
+            <div class="content-section">
+              <div class="content-title">Autoevaluación — Escala Likert</div>
+              <p class="content-text" style="margin-bottom:8px;">Califica tu dominio de cada competencia del curso (1 = Bajo, 5 = Alto):</p>
+              <div class="likert-scale">
+                <div class="likert-item"><span class="likert-label">Comprendo los niveles y componentes de los SI</span><div class="likert-options"><button type="button" class="likert-btn" data-val="1">1</button><button type="button" class="likert-btn" data-val="2">2</button><button type="button" class="likert-btn" data-val="3">3</button><button type="button" class="likert-btn" data-val="4">4</button><button type="button" class="likert-btn" data-val="5">5</button></div></div>
+                <div class="likert-item"><span class="likert-label">Puedo diferenciar CRM, ERP, SCM y BI</span><div class="likert-options"><button type="button" class="likert-btn" data-val="1">1</button><button type="button" class="likert-btn" data-val="2">2</button><button type="button" class="likert-btn" data-val="3">3</button><button type="button" class="likert-btn" data-val="4">4</button><button type="button" class="likert-btn" data-val="5">5</button></div></div>
+                <div class="likert-item"><span class="likert-label">Aplico conceptos de gobierno y gestión de servicios TI</span><div class="likert-options"><button type="button" class="likert-btn" data-val="1">1</button><button type="button" class="likert-btn" data-val="2">2</button><button type="button" class="likert-btn" data-val="3">3</button><button type="button" class="likert-btn" data-val="4">4</button><button type="button" class="likert-btn" data-val="5">5</button></div></div>
+                <div class="likert-item"><span class="likert-label">Domino el SDLC y metodologías de desarrollo</span><div class="likert-options"><button type="button" class="likert-btn" data-val="1">1</button><button type="button" class="likert-btn" data-val="2">2</button><button type="button" class="likert-btn" data-val="3">3</button><button type="button" class="likert-btn" data-val="4">4</button><button type="button" class="likert-btn" data-val="5">5</button></div></div>
+                <div class="likert-item"><span class="likert-label">Puedo planificar la implementación de un ERP</span><div class="likert-options"><button type="button" class="likert-btn" data-val="1">1</button><button type="button" class="likert-btn" data-val="2">2</button><button type="button" class="likert-btn" data-val="3">3</button><button type="button" class="likert-btn" data-val="4">4</button><button type="button" class="likert-btn" data-val="5">5</button></div></div>
+              </div>
+            </div>
+
+            <div class="content-section">
+              <div class="content-title">Recursos adicionales</div>
+              <div class="resource-list">
+                <a href="https://www PMI.org" class="resource-link" target="_blank" rel="noopener">📘 PMI — Project Management Body of Knowledge (PMBOK)</a>
+                <a href="https://www.scrum.org" class="resource-link" target="_blank" rel="noopener">📗 Scrum.org — Guías y certificaciones ágiles</a>
+                <a href="https://www.axelos.com/certifications/itil-service-management" class="resource-link" target="_blank" rel="noopener">📙 AXELOS — ITIL 4 Foundation</a>
+                <a href="https://learn.microsoft.com/dynamics365/" class="resource-link" target="_blank" rel="noopener">📕 Microsoft Learn — Dynamics 365</a>
+                <a href="https://help.sap.com/docs/SAP_BUSINESS_ONE" class="resource-link" target="_blank" rel="noopener">📒 SAP Help Portal — Business One</a>
+                <a href="unidad1.html" class="resource-link">🔗 Repaso Unidad I — Fundamentos</a>
+                <a href="unidad2.html" class="resource-link">🔗 Repaso Unidad II — Aplicaciones</a>
+                <a href="unidad3.html" class="resource-link">🔗 Repaso Unidad III — Infraestructura</a>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+      </div>
+
+      <div class="examen-badge" style="margin:0 60px 40px;">
+        <div class="examen-icon">🎓</div>
+        <div>
+          <div class="examen-title">Evaluación Final — Cierre del Curso</div>
+          <p class="examen-text">Has completado las <strong style="color:var(--text-primary)">16 semanas</strong> del curso de Gerencia de Sistemas de Información. La evaluación final integra contenidos de las cuatro unidades. Repasa el mapa conceptual, completa el cuestionario interactivo y revisa el banco de preguntas antes de la evaluación sumativa presencial.</p>
+        </div>
+      </div>
+
+      <div class="temas-container" style="padding-top:0;">
+        <div class="biblio-section">
+          <div class="biblio-title">📚 Bibliografía General del Curso</div>
+          <ul class="biblio-list">
+            <li>Laudon, K. &amp; Laudon, J. (2022). <em>Management Information Systems: Managing the Digital Firm</em> (17th ed.). Pearson.</li>
+            <li>Stair, R. &amp; Reynolds, G. (2020). <em>Fundamentals of Information Systems</em> (10th ed.). Cengage.</li>
+            <li>McNurlin, B., Sprague, R. &amp; Bui, T. (2019). <em>Information Systems Management</em> (10th ed.). Pearson.</li>
+            <li>Project Management Institute (2021). <em>PMBOK Guide</em> (7th ed.). PMI.</li>
+            <li>Axelos (2019). <em>ITIL Foundation — ITIL 4 Edition</em>. TSO.</li>
+            <li>COBIT 2019 Framework. ISACA.</li>
+            <li>Schwaber, K. &amp; Sutherland, J. (2020). <em>The Scrum Guide</em>.</li>
+            <li>Hiatt, J. (2006). <em>ADKAR: A Model for Change</em>. Prosci Research.</li>
+            <li>Pressman, R. &amp; Maxim, B. (2020). <em>Software Engineering</em> (9th ed.). McGraw-Hill.</li>
+            <li>Microsoft (2024). <em>Cloud Adoption Framework</em>. learn.microsoft.com</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="unit-nav-bottom">
+      <a href="unidad3.html" class="nav-prev">← Unidad anterior</a>
+      <a href="index.html" class="nav-next">Fin del curso →</a>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  // CURSOR
+  const cursor=document.querySelector('.cursor'),follower=document.querySelector('.cursor-follower');
+  let mX=0,mY=0,fX=0,fY=0,rafId=null;
+  document.addEventListener('mousemove',e=>{
+    mX=e.clientX;mY=e.clientY;
+    cursor.style.left=mX+'px';cursor.style.top=mY+'px';
+    if(!rafId)animF();
+  });
+  function animF(){
+    fX+=(mX-fX)*0.12;fY+=(mY-fY)*0.12;
+    follower.style.left=fX+'px';follower.style.top=fY+'px';
+    if(Math.hypot(mX-fX,mY-fY)>0.5)rafId=requestAnimationFrame(animF);else rafId=null;
+  }
+  document.addEventListener('mouseover',e=>{if(e.target.matches('a,button,.quiz-option,.likert-btn')){cursor.style.transform='translate(-50%,-50%) scale(2)';cursor.style.background='#3b82f6';}});
+  document.addEventListener('mouseout',e=>{if(e.target.matches('a,button,.quiz-option,.likert-btn')){cursor.style.transform='translate(-50%,-50%) scale(1)';cursor.style.background='#f59e0b';}});
+  document.addEventListener('mousedown',()=>cursor.style.transform='translate(-50%,-50%) scale(0.7)');
+  document.addEventListener('mouseup',()=>cursor.style.transform='translate(-50%,-50%) scale(1)');
+
+  // ACORDEÓN
+  document.querySelectorAll('.tema-trigger').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const ac=btn.closest('.tema-acordeon');
+      const wasOpen=ac.classList.contains('open');
+      const container=ac.parentElement;
+      const isNested=container.closest('.tema-content');
+      if(!isNested){
+        container.querySelectorAll(':scope > .tema-acordeon.open').forEach(a=>{
+          if(a!==ac){a.classList.remove('open');a.querySelector('.tema-trigger').setAttribute('aria-expanded','false');}
+        });
+      }
+      ac.classList.toggle('open',!wasOpen);
+      btn.setAttribute('aria-expanded',!wasOpen?'true':'false');
+    });
+  });
+
+  // HIGHLIGHT semana activa en sidebar
+  const semanas=document.querySelectorAll('.semana-section');
+  const links=document.querySelectorAll('.semana-link');
+  const io=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        links.forEach(l=>{l.style.color='';l.style.background='';l.style.borderColor='transparent';});
+        const a=document.querySelector(`.semana-link[href="#${e.target.id}"]`);
+        if(a){a.style.color='var(--accent)';a.style.background='rgba(245,158,11,0.07)';a.style.borderColor='rgba(245,158,11,0.2)';}
+      }
+    });
+  },{threshold:0.35});
+  semanas.forEach(s=>io.observe(s));
+
+  // QUIZ INTERACTIVO
+  const quizAnswers={};
+  document.querySelectorAll('.quiz-option').forEach(opt=>{
+    opt.addEventListener('click',()=>{
+      const q=opt.closest('.quiz-question');
+      q.querySelectorAll('.quiz-option').forEach(o=>o.classList.remove('selected'));
+      opt.classList.add('selected');
+      quizAnswers[q.dataset.q]=opt.dataset.val;
+    });
+  });
+
+  document.getElementById('quizSubmit').addEventListener('click',()=>{
+    const questions=document.querySelectorAll('#quizFinal .quiz-question');
+    let score=0;
+    const total=questions.length;
+    questions.forEach(q=>{
+      const correct=q.dataset.answer;
+      const selected=quizAnswers[q.dataset.q];
+      q.querySelectorAll('.quiz-option').forEach(o=>{
+        o.classList.remove('correct','incorrect');
+        if(o.dataset.val===correct)o.classList.add('correct');
+        else if(o.dataset.val===selected&&selected!==correct)o.classList.add('incorrect');
+      });
+      if(selected===correct)score++;
+    });
+    const pct=Math.round((score/total)*100);
+    const result=document.getElementById('quizResult');
+    const title=document.getElementById('quizResultTitle');
+    const text=document.getElementById('quizResultText');
+    result.classList.add('show');
+    if(pct>=70){
+      result.className='quiz-result show pass';
+      title.textContent='¡Aprobado! '+score+'/'+total+' ('+pct+'%)';
+      text.textContent='Excelente desempeño. Has demostrado comprensión sólida de los contenidos del curso de Gerencia de Sistemas de Información. Continúa profundizando con el banco de preguntas y los recursos adicionales.';
+    }else{
+      result.className='quiz-result show fail';
+      title.textContent='Repaso necesario: '+score+'/'+total+' ('+pct+'%)';
+      text.textContent='Necesitas al menos 70% para aprobar. Revisa las preguntas marcadas en rojo, repasa las unidades correspondientes y vuelve a intentarlo.';
+    }
+    document.getElementById('quizResult').scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+
+  // LIKERT SCALE
+  document.querySelectorAll('.likert-item').forEach(item=>{
+    item.querySelectorAll('.likert-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        item.querySelectorAll('.likert-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+      });
+    });
+  });
+</script>
+</body>
+</html>
